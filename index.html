@@ -262,6 +262,34 @@ table.dt tr:last-child td{border-bottom:none}
 .lic-warn{background:#FDECEA;border:1px solid var(--red);color:#8E2C22;border-radius:12px;padding:10px 12px;font-size:12.5px;margin-top:10px}
 .lic-bar .btn{padding:7px 12px;font-size:12.5px;margin-left:auto}
 /* Pratinjau cetak dengan zoom */
+/* Pembukuan */
+.kas-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+@media(min-width:768px){ .kas-stats{grid-template-columns:repeat(4,1fr)} }
+.kas-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px}
+.kas-card .l{font-size:11.5px;color:var(--muted);font-weight:600;margin-bottom:3px}
+.kas-card .n{font-size:16px;font-weight:800;letter-spacing:-.3px}
+.kas-card.in{border-left:4px solid var(--accent)} .kas-card.in .n{color:var(--accent-deep)}
+.kas-card.out{border-left:4px solid #E9A23B} .kas-card.out .n{color:#8A5A10}
+.kas-card.net{border-left:4px solid #4A6FA5} .kas-card.net .n{color:#2F4C74}
+.kas-card.bal{background:var(--accent);border-color:var(--accent)}
+.kas-card.bal .l{color:rgba(255,255,255,.85)} .kas-card.bal .n{color:#fff}
+.kas-card.minus .n{color:var(--red)!important}
+.kas-card.bal.minus{background:var(--red);border-color:var(--red)}
+.kas-ic{flex:none;width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800}
+.kas-ic.in{background:var(--accent-soft);color:var(--accent-deep)}
+.kas-ic.out{background:#FFF1DC;color:#8A5A10}
+.kas-amt{font-weight:800;font-size:14px;white-space:nowrap}
+.kas-amt.in{color:var(--accent-deep)} .kas-amt.out{color:#8A5A10}
+.kat-row{margin-bottom:11px}
+.kat-head{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px}
+.kat-bar{height:8px;background:var(--bg);border-radius:99px;overflow:hidden}
+.kat-bar>div{height:100%;background:linear-gradient(90deg,#E9A23B,#D98324);border-radius:99px}
+.kat-pct{font-size:10.5px;color:var(--muted);text-align:right;margin-top:2px}
+.jenis-pick{display:flex;gap:8px;margin-bottom:14px}
+.jenis-pick .jp{flex:1;padding:12px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);
+  font-family:inherit;font-size:13.5px;font-weight:700;color:var(--muted);cursor:pointer}
+.jenis-pick .jp.aktif.in{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-deep)}
+.jenis-pick .jp.aktif.out{background:#FFF1DC;border-color:#E9A23B;color:#8A5A10}
 .pv-wrap{background:#8f9a94;border-radius:12px;padding:10px;overflow:auto;max-height:60vh;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y}
 .pv-stage{transform-origin:top left;width:100%}
 .pv-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0 8px}
@@ -366,7 +394,7 @@ table.dt tr:last-child td{border-bottom:none}
     <div class="login-mono" id="loginMono">IM</div>
     <h1 id="loginTitle">Universal Invoice Manager</h1>
     <p class="sub">Masuk untuk mengelola invoice bisnis Anda</p>
-    <div class="ver-badge">versi 1.8.1</div>
+    <div class="ver-badge">versi 1.9.1</div>
     <div class="login-err" id="loginErr"></div>
     <div class="field">
       <label>Username</label>
@@ -413,7 +441,7 @@ table.dt tr:last-child td{border-bottom:none}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1V10"/></svg>Dasbor</button>
     <button class="bn-item" data-tab="invoices" onclick="go('invoices')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M8 13h8M8 17h5"/></svg>Invoice</button>
-    <button class="bn-fab" onclick="openInvoiceEditor()">
+    <button class="bn-fab" id="bnFab" title="Tambah baru" onclick="fabAksi()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></button>
     <button class="bn-item" data-tab="clients" onclick="go('clients')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M23 21v-2a4 4 0 00-3-3.9M16 3.1a4 4 0 010 7.8"/><circle cx="9" cy="7" r="4"/></svg>Klien</button>
@@ -593,7 +621,7 @@ function pasangTombolBersih(root){
 }
 
 /* ---- Versi & Lisensi ---- */
-var APP_VERSION = '1.8.1';
+var APP_VERSION = '1.9.1';
 function lic(){ return (state.db && state.db.license) || { mode:'trial', valid:true, daysLeft:null }; }
 function isViewer(){ return lic().valid === false; }
 // Blokir aksi tulis saat Mode Viewer, dengan pesan yang jelas
@@ -925,6 +953,7 @@ function enterApp(){
   $('appView').classList.remove('hidden');
   refreshAvatars();
   buildSidebar();
+  segarkanFab();
   reloadData(false).then(function(){ go('dashboard'); });
 }
 function refreshAvatars(){
@@ -988,6 +1017,7 @@ var NAV = [
   { id:'clients', label:'Klien', icon:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M23 21v-2a4 4 0 00-3-3.9M16 3.1a4 4 0 010 7.8"/><circle cx="9" cy="7" r="4"/>' },
   { id:'recurring', label:'Tagihan Berulang', icon:'<path d="M17 2l4 4-4 4M3 11V9a4 4 0 014-4h14M7 22l-4-4 4-4M21 13v2a4 4 0 01-4 4H3"/>' },
   { id:'berita', label:'Berita Acara', icon:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M9 15l2 2 4-4"/>' },
+  { id:'kas', label:'Pembukuan', icon:'<path d="M3 6h18v14a1 1 0 01-1 1H4a1 1 0 01-1-1zM3 6l2-3h14l2 3M8 11h8M8 15h5"/>' },
   { id:'nota', label:'Nota', icon:'<path d="M5 3v18l3-2 2 2 2-2 2 2 2-2 3 2V3zM8 8h8M8 12h8M8 16h5"/>' },
   { id:'suratjalan', label:'Surat Jalan', icon:'<path d="M1 3h13v13H1zM14 8h4l3 3v5h-7zM6.5 19a2 2 0 100-4 2 2 0 000 4zM17.5 19a2 2 0 100-4 2 2 0 000 4z"/>' },
   { id:'faktur', label:'Faktur', icon:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M8 13h8M8 17h5"/>' },
@@ -996,7 +1026,35 @@ var NAV = [
   { id:'settings', label:'Pengaturan', icon:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 008.6 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 8.6a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9c.3.61.91 1 1.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/>' },
   { id:'users', label:'Manajemen User', icon:'<circle cx="12" cy="8" r="4"/><path d="M4 21v-1a7 7 0 0114 0v1"/>', adminOnly:true }
 ];
-var TITLES = { dashboard:'Dasbor', invoices:'Invoice', clients:'Klien', recurring:'Tagihan Berulang', berita:'Berita Acara', nota:'Nota', suratjalan:'Surat Jalan', faktur:'Faktur', tax:'Laporan Pajak', logs:'Log Aktivitas', settings:'Pengaturan', users:'Manajemen User' };
+/* Tombol + di bawah menyesuaikan tab yang sedang dibuka */
+var FAB_AKSI = {
+  dashboard:   { label:'Invoice Baru',      jalan:function(){ openInvoiceEditor(); } },
+  invoices:    { label:'Invoice Baru',      jalan:function(){ openInvoiceEditor(); } },
+  clients:     { label:'Klien Baru',        jalan:function(){ openClientEditor(); } },
+  recurring:   { label:'Tagihan Berulang',  jalan:function(){ openRecurringEditor(); } },
+  berita:      { label:'Berita Acara Baru', jalan:function(){ openBeritaEditor(); } },
+  nota:        { label:'Nota Baru',         jalan:function(){ openDokEditor('nota'); } },
+  suratjalan:  { label:'Surat Jalan Baru',  jalan:function(){ openDokEditor('surat-jalan'); } },
+  faktur:      { label:'Faktur Baru',       jalan:function(){ openDokEditor('faktur'); } },
+  kas:         { label:'Catat Transaksi',   jalan:function(){ openKasEditor(); } },
+  users:       { label:'User Baru',         jalan:function(){ openUserEditor(); } }
+};
+function fabAksi(){
+  var a = FAB_AKSI[state.tab];
+  if(a && a.jalan){ a.jalan(); return; }
+  openInvoiceEditor();   // tab tanpa aksi tambah (pajak, log, pengaturan)
+}
+function segarkanFab(){
+  var fab = $('bnFab'); if(!fab) return;
+  var a = FAB_AKSI[state.tab];
+  fab.title = a ? a.label : 'Invoice Baru';
+  fab.setAttribute('aria-label', fab.title);
+  // Sembunyikan pada tab yang memang tidak punya aksi tambah
+  var sembunyi = ['tax','logs','settings'].indexOf(state.tab) !== -1;
+  fab.style.visibility = sembunyi ? 'hidden' : 'visible';
+}
+
+var TITLES = { dashboard:'Dasbor', invoices:'Invoice', clients:'Klien', recurring:'Tagihan Berulang', berita:'Berita Acara', kas:'Pembukuan', nota:'Nota', suratjalan:'Surat Jalan', faktur:'Faktur', tax:'Laporan Pajak', logs:'Log Aktivitas', settings:'Pengaturan', users:'Manajemen User' };
 
 function buildSidebar(){
   var html = NAV.filter(function(n){ return !n.adminOnly || state.user.role === 'admin'; })
@@ -1013,9 +1071,10 @@ function go(tab){
   if(tab==='settings'){ _logoData = null; _appLogoData = null; _stampData = null; _signatureData = null; }
   $('pageTitle').textContent = TITLES[tab] || 'Dasbor';
   document.querySelectorAll('.bn-item').forEach(function(b){
-    b.classList.toggle('active', b.dataset.tab === tab || (b.dataset.tab==='more' && ['recurring','berita','nota','suratjalan','faktur','tax','logs','settings','users'].indexOf(tab)!==-1));
+    b.classList.toggle('active', b.dataset.tab === tab || (b.dataset.tab==='more' && ['recurring','berita','nota','suratjalan','faktur','kas','tax','logs','settings','users'].indexOf(tab)!==-1));
   });
   document.querySelectorAll('.sb-item').forEach(function(b){ b.classList.toggle('active', b.dataset.tab === tab); });
+  segarkanFab();
   window.scrollTo(0,0);
   render();
 }
@@ -1023,6 +1082,7 @@ function go(tab){
 function showMore(){
   var items = [
     { tab:'recurring', label:'Tagihan Berulang' },
+    { tab:'kas', label:'Pembukuan' },
     { tab:'berita', label:'Berita Acara' },
     { tab:'nota', label:'Nota' },
     { tab:'suratjalan', label:'Surat Jalan' },
@@ -1194,6 +1254,7 @@ function render(){
     case 'clients': body = viewClients(); break;
     case 'recurring': body = viewRecurring(); break;
     case 'berita': body = viewBerita(); break;
+    case 'kas': body = viewKas(); after = afterKas; break;
     case 'nota': body = viewDokumen('nota'); break;
     case 'suratjalan': body = viewDokumen('surat-jalan'); break;
     case 'faktur': body = viewDokumen('faktur'); break;
@@ -2916,6 +2977,238 @@ function hexToRgb(hex){
   var n = parseInt(h,16);
   if(isNaN(n)) return { r:27,g:79,b:156 };
   return { r:(n>>16)&255, g:(n>>8)&255, b:n&255 };
+}
+
+
+/* ============================================================
+   PEMBUKUAN SEDERHANA (KAS MASUK / KELUAR)
+============================================================ */
+var KAT_MASUK = ['Penjualan','Jasa','Pelunasan Invoice','Modal','Lainnya'];
+var KAT_KELUAR = ['Pembelian Bahan','Gaji/Upah','Sewa','Listrik/Air','Transport','Peralatan','Pemasaran','Pajak','Lainnya'];
+var METODE_KAS = ['tunai','transfer','qris','dana','ovo','gopay','shopeepay','linkaja','lainnya'];
+var kasBulan = '';   // '' = semua, format YYYY-MM
+var kasJenis = 'semua';
+
+function kasList(){
+  return (state.db.kas||[]).slice().sort(function(a,b){
+    return String(b.tanggal||'').localeCompare(String(a.tanggal||'')) ||
+           String(b.createdAt||'').localeCompare(String(a.createdAt||''));
+  });
+}
+function kasTerfilter(){
+  return kasList().filter(function(k){
+    if(kasBulan && String(k.tanggal||'').substring(0,7) !== kasBulan) return false;
+    if(kasJenis !== 'semua' && k.jenis !== kasJenis) return false;
+    return true;
+  });
+}
+function viewKas(){
+  var semua = kasList();
+  var data = kasTerfilter();
+  var masuk = data.filter(function(k){return k.jenis==='masuk';}).reduce(function(s,k){return s+k.jumlah;},0);
+  var keluar = data.filter(function(k){return k.jenis==='keluar';}).reduce(function(s,k){return s+k.jumlah;},0);
+  var saldo = masuk - keluar;
+  // Saldo keseluruhan (tidak ikut filter) — ini angka kas sesungguhnya
+  var saldoTotal = semua.reduce(function(s,k){ return s + (k.jenis==='masuk' ? k.jumlah : -k.jumlah); },0);
+  var cur = (state.db.settings||{}).defaultCurrency || 'IDR';
+
+  // Daftar bulan yang tersedia
+  var bulanSet = {};
+  semua.forEach(function(k){ var b=String(k.tanggal||'').substring(0,7); if(b) bulanSet[b]=1; });
+  var bulanOpts = '<option value="">Semua Bulan</option>' + Object.keys(bulanSet).sort().reverse().map(function(b){
+    return '<option value="'+b+'"'+(kasBulan===b?' selected':'')+'>'+namaBulan(b)+'</option>';
+  }).join('');
+
+  var kartu =
+    '<div class="kas-stats">' +
+      '<div class="kas-card in"><div class="l">Pemasukan</div><div class="n">'+fmtMoney(masuk,cur)+'</div></div>' +
+      '<div class="kas-card out"><div class="l">Pengeluaran</div><div class="n">'+fmtMoney(keluar,cur)+'</div></div>' +
+      '<div class="kas-card net'+(saldo<0?' minus':'')+'"><div class="l">Selisih '+(kasBulan?namaBulan(kasBulan):'Semua')+'</div><div class="n">'+fmtMoney(saldo,cur)+'</div></div>' +
+      '<div class="kas-card bal'+(saldoTotal<0?' minus':'')+'"><div class="l">Saldo Kas</div><div class="n">'+fmtMoney(saldoTotal,cur)+'</div></div>' +
+    '</div>';
+
+  var toolbar = '<div class="toolbar">' +
+    (isViewer()?'':'<button class="btn btn-primary btn-sm" onclick="openKasEditor()">+ Catat Transaksi</button>') +
+    '<select onchange="kasBulan=this.value;render()">'+bulanOpts+'</select>' +
+    '<select onchange="kasJenis=this.value;render()">' +
+      '<option value="semua"'+(kasJenis==='semua'?' selected':'')+'>Semua Jenis</option>' +
+      '<option value="masuk"'+(kasJenis==='masuk'?' selected':'')+'>Pemasukan</option>' +
+      '<option value="keluar"'+(kasJenis==='keluar'?' selected':'')+'>Pengeluaran</option>' +
+    '</select>' +
+    (isViewer()?'':'<button class="btn btn-ghost btn-sm" onclick="tarikInvoice()">⭳ Tarik Invoice Lunas</button>') +
+    '<button class="btn btn-ghost btn-sm" onclick="unduhKasCsv()">⬇ CSV</button>' +
+    '</div>';
+
+  var grafik = semua.length ? '<div class="card card-p"><div class="section-title" style="margin-top:0">Arus Kas 6 Bulan Terakhir</div>' +
+    '<div style="height:230px"><canvas id="kasChart"></canvas></div></div>' : '';
+
+  var perKategori = ringkasKategori(data, cur);
+
+  var baris = data.length ? '<div class="card">' + data.map(kasRow).join('') + '</div>'
+    : '<div class="empty"><b>Belum ada transaksi</b><br>Catat pemasukan dan pengeluaran harian di sini, atau tarik otomatis dari invoice yang sudah lunas.</div>';
+
+  return kartu + toolbar + grafik + perKategori + baris;
+}
+function namaBulan(ym){
+  var p = String(ym||'').split('-');
+  if(p.length<2) return ym;
+  var B=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  return B[Number(p[1])-1] + ' ' + p[0];
+}
+function kasRow(k){
+  var cur = (state.db.settings||{}).defaultCurrency || 'IDR';
+  var masuk = k.jenis === 'masuk';
+  return '<div class="list-item" style="cursor:pointer" onclick="openKasEditor(\'' + k.id + '\')">' +
+    '<div class="kas-ic '+(masuk?'in':'out')+'">'+(masuk?'↓':'↑')+'</div>' +
+    '<div class="li-main"><div class="t1">'+esc(k.keterangan||k.kategori||'-')+'</div>' +
+    '<div class="t2">'+esc(k.kategori||'')+' · '+esc(k.metode||'')+' · '+fmtDate(k.tanggal)+'</div></div>' +
+    '<div class="li-amt"><div class="kas-amt '+(masuk?'in':'out')+'">'+(masuk?'+':'−')+' '+fmtMoney(k.jumlah,cur)+'</div>' +
+    (k.invoiceNumber?'<div class="a2">'+esc(k.invoiceNumber)+'</div>':'')+'</div></div>';
+}
+function ringkasKategori(data, cur){
+  var keluar = data.filter(function(k){return k.jenis==='keluar';});
+  if(!keluar.length) return '';
+  var per = {};
+  keluar.forEach(function(k){ per[k.kategori||'Lainnya'] = (per[k.kategori||'Lainnya']||0) + k.jumlah; });
+  var total = keluar.reduce(function(s,k){return s+k.jumlah;},0) || 1;
+  var urut = Object.keys(per).sort(function(a,b){ return per[b]-per[a]; }).slice(0,6);
+  return '<div class="card card-p"><div class="section-title" style="margin-top:0">Pengeluaran Terbesar</div>' +
+    urut.map(function(nama){
+      var pct = Math.round(per[nama]/total*100);
+      return '<div class="kat-row"><div class="kat-head"><span>'+esc(nama)+'</span><b>'+fmtMoney(per[nama],cur)+'</b></div>' +
+        '<div class="kat-bar"><div style="width:'+pct+'%"></div></div><div class="kat-pct">'+pct+'%</div></div>';
+    }).join('') + '</div>';
+}
+function afterKas(){
+  var el = $('kasChart'); if(!el || typeof Chart === 'undefined') return;
+  if(window._kasChart){ window._kasChart.destroy(); window._kasChart = null; }
+  var bulan = [], skrg = new Date();
+  for(var i=5;i>=0;i--){
+    var d = new Date(skrg.getFullYear(), skrg.getMonth()-i, 1);
+    bulan.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'));
+  }
+  var masuk = bulan.map(function(b){
+    return (state.db.kas||[]).filter(function(k){ return k.jenis==='masuk' && String(k.tanggal||'').substring(0,7)===b; })
+      .reduce(function(s,k){return s+k.jumlah;},0);
+  });
+  var keluar = bulan.map(function(b){
+    return (state.db.kas||[]).filter(function(k){ return k.jenis==='keluar' && String(k.tanggal||'').substring(0,7)===b; })
+      .reduce(function(s,k){return s+k.jumlah;},0);
+  });
+  window._kasChart = new Chart(el, {
+    type:'bar',
+    data:{ labels: bulan.map(function(b){ return namaBulan(b).split(' ')[0].substring(0,3); }),
+      datasets:[
+        { label:'Masuk', data:masuk, backgroundColor:'#0B7A5C', borderRadius:6 },
+        { label:'Keluar', data:keluar, backgroundColor:'#E9A23B', borderRadius:6 }
+      ]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ position:'bottom', labels:{ boxWidth:12, font:{ size:11 } } } },
+      scales:{ y:{ beginAtZero:true, ticks:{ callback:function(v){ return ringkasAngka(v); }, font:{size:10} } },
+               x:{ grid:{ display:false }, ticks:{ font:{size:11} } } } }
+  });
+}
+function ringkasAngka(v){
+  v = Number(v)||0;
+  if(v >= 1000000000) return (v/1000000000).toFixed(1)+' M';
+  if(v >= 1000000) return (v/1000000).toFixed(1)+' jt';
+  if(v >= 1000) return Math.round(v/1000)+' rb';
+  return String(v);
+}
+
+/* ---- Editor transaksi ---- */
+var kasState = null;
+function openKasEditor(id){
+  if(!guardWrite()) return;
+  var k = id ? (state.db.kas||[]).find(function(x){ return String(x.id)===String(id); }) : null;
+  kasState = k ? JSON.parse(JSON.stringify(k))
+    : { id:'', tanggal: todayStr(), jenis:'masuk', kategori:'Penjualan', keterangan:'', jumlah:0, metode:'tunai', catatan:'' };
+  renderKasEditor();
+}
+function renderKasEditor(){
+  var k = kasState;
+  var kats = (k.jenis==='masuk' ? KAT_MASUK : KAT_KELUAR);
+  if(kats.indexOf(k.kategori) === -1) k.kategori = kats[0];
+  openModal('<div class="modal narrow"><h3>'+(k.id?'Ubah':'Catat')+' Transaksi</h3>' +
+    '<div class="jenis-pick">' +
+      '<button class="jp'+(k.jenis==='masuk'?' aktif in':'')+'" onclick="kasSetJenis(\'masuk\')">↓ Pemasukan</button>' +
+      '<button class="jp'+(k.jenis==='keluar'?' aktif out':'')+'" onclick="kasSetJenis(\'keluar\')">↑ Pengeluaran</button>' +
+    '</div>' +
+    '<div class="field"><label>Jumlah *</label><input id="ksJumlah" type="number" min="0" inputmode="numeric" value="'+(k.jumlah||'')+'" placeholder="0"></div>' +
+    '<div class="grid-2">' +
+      '<div class="field"><label>Tanggal</label><input id="ksTanggal" type="date" value="'+esc(k.tanggal)+'"></div>' +
+      '<div class="field"><label>Kategori</label><select id="ksKategori">' +
+        kats.map(function(c){ return '<option'+(k.kategori===c?' selected':'')+'>'+c+'</option>'; }).join('') +
+      '</select></div>' +
+    '</div>' +
+    '<div class="field"><label>Keterangan</label><input id="ksKeterangan" value="'+esc(k.keterangan||'')+'" placeholder="mis. beli besi siku 4 batang"></div>' +
+    '<div class="field"><label>Metode</label><select id="ksMetode">' +
+      METODE_KAS.map(function(m){ return '<option value="'+m+'"'+(k.metode===m?' selected':'')+'>'+m.charAt(0).toUpperCase()+m.slice(1)+'</option>'; }).join('') +
+    '</select></div>' +
+    (k.invoiceNumber?'<div class="detail-row"><span>Dari Invoice</span><b>'+esc(k.invoiceNumber)+'</b></div>':'') +
+    '<div class="modal-actions">' +
+      (k.id?'<button class="btn btn-danger" onclick="hapusKas(\''+k.id+'\')">Hapus</button>':'') +
+      '<button class="btn btn-ghost" onclick="closeModal()">Batal</button>' +
+      '<button class="btn btn-primary" onclick="simpanKas()">Simpan</button>' +
+    '</div></div>');
+}
+function kasSetJenis(j){
+  syncKasForm();
+  kasState.jenis = j;
+  kasState.kategori = (j==='masuk'?KAT_MASUK:KAT_KELUAR)[0];
+  renderKasEditor();
+}
+function syncKasForm(){
+  if(!$('ksJumlah')) return;
+  kasState.jumlah = Number($('ksJumlah').value)||0;
+  kasState.tanggal = $('ksTanggal').value;
+  kasState.kategori = $('ksKategori').value;
+  kasState.keterangan = $('ksKeterangan').value.trim();
+  kasState.metode = $('ksMetode').value;
+}
+function simpanKas(){
+  syncKasForm();
+  if(!kasState.jumlah || kasState.jumlah <= 0){ toast('Jumlah harus lebih dari 0.'); return; }
+  loading(true);
+  api('saveKas', kasState).then(function(rec){
+    state.db.kas = state.db.kas || [];
+    var i = state.db.kas.findIndex(function(x){ return String(x.id)===String(rec.id); });
+    if(i>=0) state.db.kas[i] = rec; else state.db.kas.unshift(rec);
+    loading(false); closeModal(); toast('Transaksi tersimpan ✓'); render();
+  }).catch(function(e){ loading(false); toast(e.message); });
+}
+function hapusKas(id){
+  if(!confirm('Hapus transaksi ini?')) return;
+  loading(true);
+  api('deleteKas', { id:id }).then(function(){
+    state.db.kas = (state.db.kas||[]).filter(function(x){ return String(x.id)!==String(id); });
+    loading(false); closeModal(); toast('Transaksi dihapus'); render();
+  }).catch(function(e){ loading(false); toast(e.message); });
+}
+function tarikInvoice(){
+  if(!guardWrite()) return;
+  if(!confirm('Catat semua invoice berstatus LUNAS yang belum tercatat sebagai pemasukan?')) return;
+  loading(true);
+  api('tarikDariInvoice').then(function(r){
+    toast(r.ditambahkan ? (r.ditambahkan+' invoice dicatat ✓') : 'Tidak ada invoice baru untuk dicatat');
+    return reloadData(false);
+  }).catch(function(e){ loading(false); toast(e.message); });
+}
+function unduhKasCsv(){
+  var data = kasTerfilter();
+  if(!data.length){ toast('Tidak ada data untuk diunduh.'); return; }
+  var head = ['tanggal','jenis','kategori','keterangan','jumlah','metode','invoice'];
+  var csv = head.join(',') + '\n' + data.map(function(k){
+    return [k.tanggal,k.jenis,k.kategori,k.keterangan,k.jumlah,k.metode,k.invoiceNumber||''].map(function(v){
+      return '"' + String(v===undefined?'':v).replace(/"/g,'""') + '"';
+    }).join(',');
+  }).join('\n');
+  var blob = new Blob([csv], { type:'text/csv;charset=utf-8' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'pembukuan-' + (kasBulan||'semua') + '.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  toast('CSV diunduh ✓');
 }
 
 /* ============================================================
