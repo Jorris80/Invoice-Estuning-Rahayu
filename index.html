@@ -262,6 +262,50 @@ table.dt tr:last-child td{border-bottom:none}
 .lic-warn{background:#FDECEA;border:1px solid var(--red);color:#8E2C22;border-radius:12px;padding:10px 12px;font-size:12.5px;margin-top:10px}
 .lic-bar .btn{padding:7px 12px;font-size:12.5px;margin-left:auto}
 /* Pratinjau cetak dengan zoom */
+/* Sub-navigasi pembukuan */
+.subnav{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+.subnav .sn{flex:none;padding:8px 14px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);
+  font-family:inherit;font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap}
+.subnav .sn.aktif{background:var(--accent);border-color:var(--accent);color:#fff}
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.lap-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.lap-tbl th{text-align:left;padding:8px 6px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.lap-tbl td{padding:7px 6px;border-bottom:1px solid var(--line)}
+.lap-tbl tr.grup th{background:var(--accent-soft);color:var(--accent-deep)}
+.lap-tbl tr.jml td{font-weight:800;border-top:1.5px solid var(--ink);border-bottom:none}
+.lap-tbl tr.hasil td{font-weight:800;font-size:14.5px;color:var(--accent-deep);background:var(--accent-soft)}
+.lap-tbl tr.hasil.neg td{color:var(--red);background:#FDECEA}
+.lap-tbl td.kosong{color:var(--muted);font-style:italic}
+.lap-tbl .pos{color:var(--accent-deep)} .lap-tbl .neg{color:var(--red)}
+.lap-card .lap-judul{font-size:15px;font-weight:800;letter-spacing:-.2px}
+.lap-card .lap-sub{font-size:12px;color:var(--muted);margin-bottom:10px}
+.akun-tag{font-size:11.5px;color:var(--muted)}
+.mini{font-size:11.5px;color:var(--muted)}
+.kat-bar .b0{background:#7FA8D9} .kat-bar .b1{background:#0B7A5C} .kat-bar .b2{background:#E9A23B}
+.kat-bar .b3{background:#D9772B} .kat-bar .b4{background:#C0392B}
+.warn-bar{background:#FFF6E5;border:1px solid #E9A23B;color:#8A5A10;border-radius:12px;padding:10px 13px;font-size:12.5px;font-weight:600;margin-bottom:12px}
+.stok-ic{flex:none;width:38px;height:38px;border-radius:11px;background:var(--accent-soft);color:var(--accent-deep);
+  display:flex;align-items:center;justify-content:center;font-weight:800}
+.stok-ic.kritis{background:#FFF1DC;color:#8A5A10} .stok-ic.habis{background:#FDECEA;color:var(--red)}
+.stok-qty{font-weight:800;font-size:15px;white-space:nowrap}
+.stok-qty.kritis{color:#8A5A10} .stok-qty.habis{color:var(--red)}
+.mut-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}
+.mut-row:last-child{border-bottom:none}
+.mut-ic{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex:none}
+.mut-ic.in{background:var(--accent-soft);color:var(--accent-deep)} .mut-ic.out{background:#FFF1DC;color:#8A5A10}
+.mut-ic.adj{background:var(--bg);color:var(--muted)}
+.mut-main{flex:1;font-size:13px} .mut-qty{font-size:13px}
+.mut-qty.in{color:var(--accent-deep)} .mut-qty.out{color:#8A5A10}
+.lap-sheet .lap-h{font-size:14px;font-weight:800;margin:18px 0 6px;color:var(--accent-deep)}
+.lap-print{width:100%;border-collapse:collapse;font-size:12px}
+.lap-print td{padding:6px 8px;border-bottom:1px solid #e3eae6}
+.lap-print tr.g th{background:var(--accent-soft);color:var(--accent-deep);text-align:left;padding:6px 8px;font-size:11px;text-transform:uppercase}
+.lap-print tr.t td{border-top:1.5px solid #334;border-bottom:none}
+.lap-print tr.h td{background:var(--accent-soft);font-size:13px}
+.lap-note{font-size:10.5px;color:#778;margin-top:16px;line-height:1.5}
+.legal{font-size:13px;line-height:1.7}
+.legal h4{font-size:13.5px;font-weight:800;margin:14px 0 4px}
+.legal ul{margin:0 0 0 18px}
 /* Pembukuan */
 .kas-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
 @media(min-width:768px){ .kas-stats{grid-template-columns:repeat(4,1fr)} }
@@ -394,7 +438,7 @@ table.dt tr:last-child td{border-bottom:none}
     <div class="login-mono" id="loginMono">IM</div>
     <h1 id="loginTitle">Universal Invoice Manager</h1>
     <p class="sub">Masuk untuk mengelola invoice bisnis Anda</p>
-    <div class="ver-badge">versi 1.9.1</div>
+    <div class="ver-badge">versi 2.0.1</div>
     <div class="login-err" id="loginErr"></div>
     <div class="field">
       <label>Username</label>
@@ -621,7 +665,7 @@ function pasangTombolBersih(root){
 }
 
 /* ---- Versi & Lisensi ---- */
-var APP_VERSION = '1.9.1';
+var APP_VERSION = '2.0.1';
 function lic(){ return (state.db && state.db.license) || { mode:'trial', valid:true, daysLeft:null }; }
 function isViewer(){ return lic().valid === false; }
 // Blokir aksi tulis saat Mode Viewer, dengan pesan yang jelas
@@ -1018,6 +1062,7 @@ var NAV = [
   { id:'recurring', label:'Tagihan Berulang', icon:'<path d="M17 2l4 4-4 4M3 11V9a4 4 0 014-4h14M7 22l-4-4 4-4M21 13v2a4 4 0 01-4 4H3"/>' },
   { id:'berita', label:'Berita Acara', icon:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M9 15l2 2 4-4"/>' },
   { id:'kas', label:'Pembukuan', icon:'<path d="M3 6h18v14a1 1 0 01-1 1H4a1 1 0 01-1-1zM3 6l2-3h14l2 3M8 11h8M8 15h5"/>' },
+  { id:'stok', label:'Stok', icon:'<path d="M21 8l-9-5-9 5v8l9 5 9-5zM3 8l9 5 9-5M12 13v10"/>' },
   { id:'nota', label:'Nota', icon:'<path d="M5 3v18l3-2 2 2 2-2 2 2 2-2 3 2V3zM8 8h8M8 12h8M8 16h5"/>' },
   { id:'suratjalan', label:'Surat Jalan', icon:'<path d="M1 3h13v13H1zM14 8h4l3 3v5h-7zM6.5 19a2 2 0 100-4 2 2 0 000 4zM17.5 19a2 2 0 100-4 2 2 0 000 4z"/>' },
   { id:'faktur', label:'Faktur', icon:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M8 13h8M8 17h5"/>' },
@@ -1036,7 +1081,8 @@ var FAB_AKSI = {
   nota:        { label:'Nota Baru',         jalan:function(){ openDokEditor('nota'); } },
   suratjalan:  { label:'Surat Jalan Baru',  jalan:function(){ openDokEditor('surat-jalan'); } },
   faktur:      { label:'Faktur Baru',       jalan:function(){ openDokEditor('faktur'); } },
-  kas:         { label:'Catat Transaksi',   jalan:function(){ openKasEditor(); } },
+  kas:         { label:'Catat Transaksi',   jalan:function(){ kasSub='ringkasan'; openKasEditor(); } },
+  stok:        { label:'Barang Baru',       jalan:function(){ openStokEditor(); } },
   users:       { label:'User Baru',         jalan:function(){ openUserEditor(); } }
 };
 function fabAksi(){
@@ -1054,7 +1100,7 @@ function segarkanFab(){
   fab.style.visibility = sembunyi ? 'hidden' : 'visible';
 }
 
-var TITLES = { dashboard:'Dasbor', invoices:'Invoice', clients:'Klien', recurring:'Tagihan Berulang', berita:'Berita Acara', kas:'Pembukuan', nota:'Nota', suratjalan:'Surat Jalan', faktur:'Faktur', tax:'Laporan Pajak', logs:'Log Aktivitas', settings:'Pengaturan', users:'Manajemen User' };
+var TITLES = { dashboard:'Dasbor', invoices:'Invoice', clients:'Klien', recurring:'Tagihan Berulang', berita:'Berita Acara', kas:'Pembukuan', stok:'Stok & Inventaris', nota:'Nota', suratjalan:'Surat Jalan', faktur:'Faktur', tax:'Laporan Pajak', logs:'Log Aktivitas', settings:'Pengaturan', users:'Manajemen User' };
 
 function buildSidebar(){
   var html = NAV.filter(function(n){ return !n.adminOnly || state.user.role === 'admin'; })
@@ -1071,7 +1117,7 @@ function go(tab){
   if(tab==='settings'){ _logoData = null; _appLogoData = null; _stampData = null; _signatureData = null; }
   $('pageTitle').textContent = TITLES[tab] || 'Dasbor';
   document.querySelectorAll('.bn-item').forEach(function(b){
-    b.classList.toggle('active', b.dataset.tab === tab || (b.dataset.tab==='more' && ['recurring','berita','nota','suratjalan','faktur','kas','tax','logs','settings','users'].indexOf(tab)!==-1));
+    b.classList.toggle('active', b.dataset.tab === tab || (b.dataset.tab==='more' && ['recurring','berita','nota','suratjalan','faktur','kas','stok','tax','logs','settings','users'].indexOf(tab)!==-1));
   });
   document.querySelectorAll('.sb-item').forEach(function(b){ b.classList.toggle('active', b.dataset.tab === tab); });
   segarkanFab();
@@ -1083,6 +1129,7 @@ function showMore(){
   var items = [
     { tab:'recurring', label:'Tagihan Berulang' },
     { tab:'kas', label:'Pembukuan' },
+    { tab:'stok', label:'Stok & Inventaris' },
     { tab:'berita', label:'Berita Acara' },
     { tab:'nota', label:'Nota' },
     { tab:'suratjalan', label:'Surat Jalan' },
@@ -1099,6 +1146,7 @@ function showMore(){
     }).join('') +
     (state.user && state.user.role === 'admin' ?
       '<button class="sheet-item" onclick="closeModal();openBackup()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4"/></svg>Backup Data</button>' : '') +
+    '<button class="sheet-item" onclick="closeModal();openTentang()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Tentang Aplikasi</button>' +
     '<button class="sheet-item" onclick="closeModal();openLicenseModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>Lisensi Aplikasi</button>' +
     '<button class="sheet-item" onclick="openChangePassword()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Ganti Password</button>' +
     '<button class="sheet-item" style="color:var(--red)" onclick="doLogout()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>Keluar</button>' +
@@ -1254,7 +1302,8 @@ function render(){
     case 'clients': body = viewClients(); break;
     case 'recurring': body = viewRecurring(); break;
     case 'berita': body = viewBerita(); break;
-    case 'kas': body = viewKas(); after = afterKas; break;
+    case 'kas': body = viewKasHub(); after = afterKasHub; break;
+    case 'stok': body = viewStok(); break;
     case 'nota': body = viewDokumen('nota'); break;
     case 'suratjalan': body = viewDokumen('surat-jalan'); break;
     case 'faktur': body = viewDokumen('faktur'); break;
@@ -3209,6 +3258,579 @@ function unduhKasCsv(){
   a.download = 'pembukuan-' + (kasBulan||'semua') + '.csv';
   document.body.appendChild(a); a.click(); a.remove();
   toast('CSV diunduh ✓');
+}
+
+
+/* ============================================================
+   BUKU BESAR · PIUTANG · LAPORAN KEUANGAN
+============================================================ */
+var kasSub = 'ringkasan';   // ringkasan | besar | piutang | laporan
+var lapPeriode = '';        // '' = semua, YYYY-MM
+
+function subNav(){
+  var items = [['ringkasan','Ringkasan'],['besar','Buku Besar'],['piutang','Piutang'],['laporan','Laporan']];
+  return '<div class="subnav">' + items.map(function(i){
+    return '<button class="sn'+(kasSub===i[0]?' aktif':'')+'" onclick="kasSub=\''+i[0]+'\';render()">'+i[1]+'</button>';
+  }).join('') + '</div>';
+}
+function viewKasHub(){
+  var nav = subNav();
+  if(kasSub==='besar') return nav + viewBukuBesar();
+  if(kasSub==='piutang') return nav + viewPiutang();
+  if(kasSub==='laporan') return nav + viewLaporan();
+  return nav + viewKas();
+}
+function afterKasHub(){ if(kasSub==='ringkasan') afterKas(); if(kasSub==='laporan') afterLaporan(); }
+
+/* ---------------- BUKU BESAR ---------------- */
+function viewBukuBesar(){
+  var cur = (state.db.settings||{}).defaultCurrency || 'IDR';
+  var data = kasList().slice().reverse();   // urut lama → baru untuk saldo berjalan
+  if(!data.length) return '<div class="empty"><b>Buku besar masih kosong</b><br>Catat transaksi di Ringkasan terlebih dahulu.</div>';
+
+  // Kelompokkan per akun (kategori)
+  var akun = {};
+  data.forEach(function(k){
+    var nm = k.kategori || 'Lainnya';
+    if(!akun[nm]) akun[nm] = { nama:nm, jenis:k.jenis, masuk:0, keluar:0, baris:[] };
+    if(k.jenis==='masuk') akun[nm].masuk += k.jumlah; else akun[nm].keluar += k.jumlah;
+    akun[nm].baris.push(k);
+  });
+  var nama = Object.keys(akun).sort();
+
+  // Jurnal berjalan (semua akun)
+  var saldo = 0;
+  var jurnal = data.map(function(k){
+    saldo += (k.jenis==='masuk' ? k.jumlah : -k.jumlah);
+    return '<tr><td>'+fmtDate(k.tanggal)+'</td><td>'+esc(k.keterangan||k.kategori)+'</td>' +
+      '<td class="akun-tag">'+esc(k.kategori||'')+'</td>' +
+      '<td class="tr num">'+(k.jenis==='masuk'?fmtMoney(k.jumlah,cur):'')+'</td>' +
+      '<td class="tr num">'+(k.jenis==='keluar'?fmtMoney(k.jumlah,cur):'')+'</td>' +
+      '<td class="tr num"><b>'+fmtMoney(saldo,cur)+'</b></td></tr>';
+  }).reverse().join('');
+
+  var ringkas = '<div class="card card-p"><div class="section-title" style="margin-top:0">Saldo per Akun</div>' +
+    '<div class="tbl-scroll"><table class="lap-tbl"><tr><th>Akun</th><th class="tr">Debit (Masuk)</th><th class="tr">Kredit (Keluar)</th><th class="tr">Saldo</th></tr>' +
+    nama.map(function(n){
+      var a = akun[n], s = a.masuk - a.keluar;
+      return '<tr><td><b>'+esc(n)+'</b></td><td class="tr num">'+(a.masuk?fmtMoney(a.masuk,cur):'—')+'</td>' +
+        '<td class="tr num">'+(a.keluar?fmtMoney(a.keluar,cur):'—')+'</td>' +
+        '<td class="tr num '+(s<0?'neg':'pos')+'">'+fmtMoney(s,cur)+'</td></tr>';
+    }).join('') + '</table></div></div>';
+
+  var jurnalCard = '<div class="card card-p"><div class="section-title" style="margin-top:0">Jurnal & Saldo Berjalan</div>' +
+    '<div class="tbl-scroll"><table class="lap-tbl"><tr><th>Tanggal</th><th>Keterangan</th><th>Akun</th>' +
+    '<th class="tr">Masuk</th><th class="tr">Keluar</th><th class="tr">Saldo</th></tr>' + jurnal + '</table></div></div>';
+
+  return ringkas + jurnalCard;
+}
+
+/* ---------------- PIUTANG ---------------- */
+function piutangData(){
+  var kini = new Date(); kini.setHours(0,0,0,0);
+  return (state.db.invoices||[]).filter(function(inv){
+    return inv.status === 'unpaid' || inv.status === 'overdue';
+  }).map(function(inv){
+    var jt = inv.dueDate ? new Date(inv.dueDate+'T00:00:00') : null;
+    var umur = jt ? Math.floor((kini - jt)/86400000) : 0;
+    return { inv:inv, umur:umur };
+  }).sort(function(a,b){ return b.umur - a.umur; });
+}
+function viewPiutang(){
+  var cur = (state.db.settings||{}).defaultCurrency || 'IDR';
+  var data = piutangData();
+  if(!data.length) return '<div class="empty"><b>Tidak ada piutang</b><br>Semua invoice sudah lunas. 🎉</div>';
+
+  var total = data.reduce(function(s,d){ return s + (Number(d.inv.total)||0); },0);
+  var ember = [
+    { l:'Belum jatuh tempo', f:function(u){ return u < 0; }, cls:'b0' },
+    { l:'1–30 hari', f:function(u){ return u >= 0 && u <= 30; }, cls:'b1' },
+    { l:'31–60 hari', f:function(u){ return u > 30 && u <= 60; }, cls:'b2' },
+    { l:'61–90 hari', f:function(u){ return u > 60 && u <= 90; }, cls:'b3' },
+    { l:'> 90 hari', f:function(u){ return u > 90; }, cls:'b4' }
+  ];
+  var kartu = '<div class="kas-stats" style="grid-template-columns:1fr">' +
+    '<div class="kas-card bal"><div class="l">Total Piutang ('+data.length+' invoice)</div><div class="n">'+fmtMoney(total,cur)+'</div></div></div>';
+
+  var aging = '<div class="card card-p"><div class="section-title" style="margin-top:0">Umur Piutang</div>' +
+    ember.map(function(e){
+      var isi = data.filter(function(d){ return e.f(d.umur); });
+      var nilai = isi.reduce(function(s,d){ return s+(Number(d.inv.total)||0); },0);
+      var pct = total ? Math.round(nilai/total*100) : 0;
+      return '<div class="kat-row"><div class="kat-head"><span>'+e.l+' <span class="mini">('+isi.length+')</span></span><b>'+fmtMoney(nilai,cur)+'</b></div>' +
+        '<div class="kat-bar"><div class="'+e.cls+'" style="width:'+pct+'%"></div></div></div>';
+    }).join('') + '</div>';
+
+  var daftar = '<div class="card">' + data.map(function(d){
+    var inv = d.inv;
+    var label = d.umur < 0 ? ('jatuh tempo ' + Math.abs(d.umur) + " hari lagi") : (d.umur + ' hari lewat');
+    var warna = d.umur < 0 ? 'draft' : (d.umur > 60 ? 'unpaid' : 'overdue');
+    return '<div class="list-item" style="cursor:pointer" onclick="openInvoiceDetail(\'' + inv.id + '\')">' +
+      '<div class="li-main"><div class="t1">'+esc(inv.clientName||'-')+'</div>' +
+      '<div class="t2">'+esc(inv.invoiceNumber||'')+' · '+label+'</div></div>' +
+      '<div class="li-amt"><div class="kas-amt out">'+fmtMoney(inv.total,cur)+'</div>' +
+      '<span class="pill '+warna+'">'+(inv.status==='overdue'?'Jatuh Tempo':'Belum Bayar')+'</span></div></div>';
+  }).join('') + '</div>';
+
+  var tips = '<p class="mini" style="margin:10px 2px">Tekan salah satu baris untuk membuka invoice, mengirim pengingat, atau menandainya lunas. Setelah lunas, pakai <b>⭳ Tarik Invoice Lunas</b> di Ringkasan agar tercatat sebagai pemasukan.</p>';
+  return kartu + aging + daftar + tips;
+}
+
+/* ---------------- LAPORAN KEUANGAN ---------------- */
+function periodeKas(){
+  return (state.db.kas||[]).filter(function(k){
+    return !lapPeriode || String(k.tanggal||'').substring(0,7) === lapPeriode;
+  });
+}
+function hitungLaporan(){
+  var cur = (state.db.settings||{}).defaultCurrency || 'IDR';
+  var semua = state.db.kas || [];
+  var data = periodeKas();
+
+  // Kategori yang dianggap penambah aset tetap, bukan beban
+  var ASET = { 'Peralatan':1 };
+  var MODAL = { 'Modal':1 };
+
+  var pendapatan = {}, beban = {}, asetBeli = 0, modalMasuk = 0;
+  data.forEach(function(k){
+    if(k.jenis === 'masuk'){
+      if(MODAL[k.kategori]) { modalMasuk += k.jumlah; return; }
+      pendapatan[k.kategori] = (pendapatan[k.kategori]||0) + k.jumlah;
+    } else {
+      if(ASET[k.kategori]) { asetBeli += k.jumlah; return; }
+      beban[k.kategori] = (beban[k.kategori]||0) + k.jumlah;
+    }
+  });
+  var totalPendapatan = Object.keys(pendapatan).reduce(function(s,k){ return s+pendapatan[k]; },0);
+  var totalBeban = Object.keys(beban).reduce(function(s,k){ return s+beban[k]; },0);
+  var labaBersih = totalPendapatan - totalBeban;
+
+  // Neraca — posisi sampai akhir periode (kumulatif, bukan hanya periode terpilih)
+  var sampai = lapPeriode ? function(k){ return String(k.tanggal||'').substring(0,7) <= lapPeriode; } : function(){ return true; };
+  var kum = semua.filter(sampai);
+  var saldoKas = kum.reduce(function(s,k){ return s + (k.jenis==='masuk'?k.jumlah:-k.jumlah); },0);
+  var asetTetap = kum.filter(function(k){ return k.jenis==='keluar' && ASET[k.kategori]; })
+                     .reduce(function(s,k){ return s+k.jumlah; },0);
+  var modalKum = kum.filter(function(k){ return k.jenis==='masuk' && MODAL[k.kategori]; })
+                    .reduce(function(s,k){ return s+k.jumlah; },0);
+  var labaKum = kum.reduce(function(s,k){
+    if(k.jenis==='masuk') return MODAL[k.kategori] ? s : s + k.jumlah;
+    return ASET[k.kategori] ? s : s - k.jumlah;
+  },0);
+  var piutang = piutangData().reduce(function(s,d){ return s+(Number(d.inv.total)||0); },0);
+  var persediaan = (state.db.stok||[]).reduce(function(s,b){ return s + (Number(b.stok)||0)*(Number(b.hargaBeli)||0); },0);
+
+  var totalAset = saldoKas + piutang + persediaan + asetTetap;
+  var ekuitas = modalKum + labaKum;
+  // Piutang & persediaan belum tercatat di kas → selisihnya menjadi ekuitas belum terealisasi
+  var ekuitasTampil = totalAset;   // kewajiban belum dilacak, jadi Aset = Ekuitas
+
+  // Arus kas
+  var arusMasuk = data.filter(function(k){return k.jenis==='masuk';}).reduce(function(s,k){return s+k.jumlah;},0);
+  var arusKeluar = data.filter(function(k){return k.jenis==='keluar';}).reduce(function(s,k){return s+k.jumlah;},0);
+  var sebelum = lapPeriode ? semua.filter(function(k){ return String(k.tanggal||'').substring(0,7) < lapPeriode; }) : [];
+  var saldoAwal = sebelum.reduce(function(s,k){ return s + (k.jenis==='masuk'?k.jumlah:-k.jumlah); },0);
+
+  return { cur:cur, pendapatan:pendapatan, beban:beban, totalPendapatan:totalPendapatan, totalBeban:totalBeban,
+    labaBersih:labaBersih, saldoKas:saldoKas, piutang:piutang, persediaan:persediaan, asetTetap:asetTetap,
+    totalAset:totalAset, modalKum:modalKum, labaKum:labaKum, ekuitas:ekuitasTampil,
+    arusMasuk:arusMasuk, arusKeluar:arusKeluar, saldoAwal:saldoAwal, saldoAkhir:saldoAwal+arusMasuk-arusKeluar };
+}
+function viewLaporan(){
+  var L = hitungLaporan(), cur = L.cur;
+  var bulanSet = {};
+  (state.db.kas||[]).forEach(function(k){ var b=String(k.tanggal||'').substring(0,7); if(b) bulanSet[b]=1; });
+  var opts = '<option value="">Sepanjang Waktu</option>' + Object.keys(bulanSet).sort().reverse().map(function(b){
+    return '<option value="'+b+'"'+(lapPeriode===b?' selected':'')+'>'+namaBulan(b)+'</option>';
+  }).join('');
+  var judulPeriode = lapPeriode ? namaBulan(lapPeriode) : 'Sepanjang Waktu';
+
+  var toolbar = '<div class="toolbar"><select onchange="lapPeriode=this.value;render()">'+opts+'</select>' +
+    '<button class="btn btn-primary btn-sm" onclick="cetakLaporan()">🖨️ Cetak Laporan</button></div>';
+
+  var barisPendapatan = Object.keys(L.pendapatan).sort().map(function(k){
+    return '<tr><td>'+esc(k)+'</td><td class="tr num">'+fmtMoney(L.pendapatan[k],cur)+'</td></tr>';
+  }).join('') || '<tr><td colspan="2" class="kosong">Belum ada pendapatan</td></tr>';
+  var barisBeban = Object.keys(L.beban).sort(function(a,b){ return L.beban[b]-L.beban[a]; }).map(function(k){
+    return '<tr><td>'+esc(k)+'</td><td class="tr num">'+fmtMoney(L.beban[k],cur)+'</td></tr>';
+  }).join('') || '<tr><td colspan="2" class="kosong">Belum ada beban</td></tr>';
+
+  var labaRugi = '<div class="card card-p lap-card"><div class="lap-judul">Laporan Laba Rugi</div>' +
+    '<div class="lap-sub">'+esc(judulPeriode)+'</div>' +
+    '<table class="lap-tbl"><tr class="grup"><th colspan="2">Pendapatan</th></tr>' + barisPendapatan +
+    '<tr class="jml"><td>Total Pendapatan</td><td class="tr num">'+fmtMoney(L.totalPendapatan,cur)+'</td></tr>' +
+    '<tr class="grup"><th colspan="2">Beban Usaha</th></tr>' + barisBeban +
+    '<tr class="jml"><td>Total Beban</td><td class="tr num">'+fmtMoney(L.totalBeban,cur)+'</td></tr>' +
+    '<tr class="hasil '+(L.labaBersih<0?'neg':'')+'"><td>'+(L.labaBersih<0?'Rugi Bersih':'Laba Bersih')+'</td>' +
+    '<td class="tr num">'+fmtMoney(L.labaBersih,cur)+'</td></tr></table></div>';
+
+  var neraca = '<div class="card card-p lap-card"><div class="lap-judul">Laporan Neraca</div>' +
+    '<div class="lap-sub">Posisi per '+(lapPeriode?('akhir '+namaBulan(lapPeriode)):'hari ini')+'</div>' +
+    '<table class="lap-tbl"><tr class="grup"><th colspan="2">Aset</th></tr>' +
+    '<tr><td>Kas &amp; Setara Kas</td><td class="tr num">'+fmtMoney(L.saldoKas,cur)+'</td></tr>' +
+    '<tr><td>Piutang Usaha</td><td class="tr num">'+fmtMoney(L.piutang,cur)+'</td></tr>' +
+    '<tr><td>Persediaan Barang</td><td class="tr num">'+fmtMoney(L.persediaan,cur)+'</td></tr>' +
+    '<tr><td>Peralatan</td><td class="tr num">'+fmtMoney(L.asetTetap,cur)+'</td></tr>' +
+    '<tr class="jml"><td>Total Aset</td><td class="tr num">'+fmtMoney(L.totalAset,cur)+'</td></tr>' +
+    '<tr class="grup"><th colspan="2">Kewajiban &amp; Ekuitas</th></tr>' +
+    '<tr><td>Kewajiban <span class="mini">(belum dicatat)</span></td><td class="tr num">'+fmtMoney(0,cur)+'</td></tr>' +
+    '<tr><td>Modal Disetor</td><td class="tr num">'+fmtMoney(L.modalKum,cur)+'</td></tr>' +
+    '<tr><td>Laba Ditahan &amp; Belum Terealisasi</td><td class="tr num">'+fmtMoney(L.totalAset-L.modalKum,cur)+'</td></tr>' +
+    '<tr class="jml"><td>Total Kewajiban &amp; Ekuitas</td><td class="tr num">'+fmtMoney(L.totalAset,cur)+'</td></tr></table></div>';
+
+  var arus = '<div class="card card-p lap-card"><div class="lap-judul">Laporan Arus Kas</div>' +
+    '<div class="lap-sub">'+esc(judulPeriode)+'</div>' +
+    '<table class="lap-tbl">' +
+    '<tr><td>Saldo Kas Awal</td><td class="tr num">'+fmtMoney(L.saldoAwal,cur)+'</td></tr>' +
+    '<tr><td>Kas Masuk</td><td class="tr num pos">+ '+fmtMoney(L.arusMasuk,cur)+'</td></tr>' +
+    '<tr><td>Kas Keluar</td><td class="tr num neg">− '+fmtMoney(L.arusKeluar,cur)+'</td></tr>' +
+    '<tr class="hasil"><td>Saldo Kas Akhir</td><td class="tr num">'+fmtMoney(L.saldoAkhir,cur)+'</td></tr></table>' +
+    '<div style="height:210px;margin-top:14px"><canvas id="lapChart"></canvas></div></div>';
+
+  var catatan = '<div class="card card-p"><div class="section-title" style="margin-top:0">Catatan Penting</div>' +
+    '<p class="mini">Laporan ini disusun dengan <b>dasar kas</b>: pendapatan dan beban diakui saat uang benar-benar diterima atau dikeluarkan, bukan saat transaksi terjadi. Piutang dan persediaan dimunculkan di neraca sebagai informasi tambahan.</p>' +
+    '<p class="mini">Kewajiban (utang usaha, pinjaman) belum dicatat aplikasi, sehingga sisi Kewajiban &amp; Ekuitas disamakan dengan Total Aset. Untuk laporan keuangan resmi — misalnya untuk bank, investor, atau pelaporan pajak badan — serahkan data ini kepada akuntan Anda.</p></div>';
+
+  return toolbar + labaRugi + neraca + arus + catatan;
+}
+function afterLaporan(){
+  var el = $('lapChart'); if(!el || typeof Chart === 'undefined') return;
+  if(window._lapChart){ window._lapChart.destroy(); window._lapChart = null; }
+  var L = hitungLaporan();
+  window._lapChart = new Chart(el, {
+    type:'doughnut',
+    data:{ labels:['Kas','Piutang','Persediaan','Peralatan'],
+      datasets:[{ data:[Math.max(0,L.saldoKas), L.piutang, L.persediaan, L.asetTetap],
+        backgroundColor:['#0B7A5C','#4A6FA5','#E9A23B','#8B6BB1'], borderWidth:0 }]},
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'58%',
+      plugins:{ legend:{ position:'bottom', labels:{ boxWidth:12, font:{size:11} } },
+        title:{ display:true, text:'Komposisi Aset', font:{size:12} } } }
+  });
+}
+function cetakLaporan(){
+  var L = hitungLaporan(), cur = L.cur, s = state.db.settings||{};
+  var judulPeriode = lapPeriode ? namaBulan(lapPeriode) : 'Sepanjang Waktu';
+  var brs = function(a,b,cls){ return '<tr class="'+(cls||'')+'"><td>'+a+'</td><td class="tr">'+b+'</td></tr>'; };
+  var pend = Object.keys(L.pendapatan).sort().map(function(k){ return brs(esc(k), fmtMoney(L.pendapatan[k],cur)); }).join('');
+  var beb = Object.keys(L.beban).sort().map(function(k){ return brs(esc(k), fmtMoney(L.beban[k],cur)); }).join('');
+  var html = '<div class="print-sheet lap-sheet">' +
+    '<div class="dok-head"><div class="dok-brand">' +
+      (s.logoUrl?'<img class="dok-logo" src="'+esc(s.logoUrl)+'" onerror="this.style.display=\'none\'">':'') +
+      '<div><div class="dok-co">'+esc(s.companyName||'')+'</div>' +
+      '<div class="dok-co-sub">'+esc(s.companyAddress||'')+'</div></div></div>' +
+      '<div class="dok-to"><div class="dok-place">Dicetak '+fmtDate(todayStr())+'</div></div></div>' +
+    '<div class="dok-title"><h2>LAPORAN KEUANGAN</h2><div class="dok-no">'+esc(judulPeriode)+'</div></div>' +
+    '<h3 class="lap-h">Laba Rugi</h3><table class="lap-print"><tr class="g"><th colspan="2">Pendapatan</th></tr>'+pend+
+      brs('<b>Total Pendapatan</b>','<b>'+fmtMoney(L.totalPendapatan,cur)+'</b>','t') +
+      '<tr class="g"><th colspan="2">Beban Usaha</th></tr>'+beb+
+      brs('<b>Total Beban</b>','<b>'+fmtMoney(L.totalBeban,cur)+'</b>','t') +
+      brs('<b>'+(L.labaBersih<0?'Rugi Bersih':'Laba Bersih')+'</b>','<b>'+fmtMoney(L.labaBersih,cur)+'</b>','h') + '</table>' +
+    '<h3 class="lap-h">Neraca</h3><table class="lap-print"><tr class="g"><th colspan="2">Aset</th></tr>' +
+      brs('Kas &amp; Setara Kas', fmtMoney(L.saldoKas,cur)) +
+      brs('Piutang Usaha', fmtMoney(L.piutang,cur)) +
+      brs('Persediaan Barang', fmtMoney(L.persediaan,cur)) +
+      brs('Peralatan', fmtMoney(L.asetTetap,cur)) +
+      brs('<b>Total Aset</b>','<b>'+fmtMoney(L.totalAset,cur)+'</b>','t') +
+      '<tr class="g"><th colspan="2">Kewajiban &amp; Ekuitas</th></tr>' +
+      brs('Kewajiban', fmtMoney(0,cur)) +
+      brs('Modal Disetor', fmtMoney(L.modalKum,cur)) +
+      brs('Laba Ditahan', fmtMoney(L.totalAset-L.modalKum,cur)) +
+      brs('<b>Total Kewajiban &amp; Ekuitas</b>','<b>'+fmtMoney(L.totalAset,cur)+'</b>','t') + '</table>' +
+    '<h3 class="lap-h">Arus Kas</h3><table class="lap-print">' +
+      brs('Saldo Kas Awal', fmtMoney(L.saldoAwal,cur)) +
+      brs('Kas Masuk', '+ '+fmtMoney(L.arusMasuk,cur)) +
+      brs('Kas Keluar', '− '+fmtMoney(L.arusKeluar,cur)) +
+      brs('<b>Saldo Kas Akhir</b>','<b>'+fmtMoney(L.saldoAkhir,cur)+'</b>','h') + '</table>' +
+    '<p class="lap-note">Disusun dengan dasar kas (cash basis). Kewajiban belum dicatat dalam aplikasi. ' +
+      'Laporan ini untuk keperluan internal; untuk pelaporan resmi mohon dikaji oleh akuntan.</p>' +
+  '</div>';
+  openPratinjau('Laporan Keuangan — ' + judulPeriode, html);
+}
+
+
+/* ============================================================
+   INVENTARIS / STOK (opsional)
+============================================================ */
+var stokQ = '', stokFilter = 'semua';
+function stokList(){
+  return (state.db.stok||[]).slice().sort(function(a,b){ return String(a.nama||'').localeCompare(String(b.nama||'')); });
+}
+function viewStok(){
+  var cur = (state.db.settings||{}).defaultCurrency || 'IDR';
+  var semua = stokList();
+  var menipis = semua.filter(function(b){ return b.minStok > 0 && b.stok <= b.minStok; });
+  var nilai = semua.reduce(function(s,b){ return s + b.stok * b.hargaBeli; },0);
+  var data = semua.filter(function(b){
+    if(stokFilter==='menipis' && !(b.minStok>0 && b.stok<=b.minStok)) return false;
+    if(stokFilter==='habis' && b.stok > 0) return false;
+    return !stokQ || ((b.nama||'')+' '+(b.kode||'')+' '+(b.kategori||'')).toLowerCase().indexOf(stokQ.toLowerCase())>=0;
+  });
+
+  var kartu = '<div class="kas-stats">' +
+    '<div class="kas-card in"><div class="l">Jenis Barang</div><div class="n">'+semua.length+'</div></div>' +
+    '<div class="kas-card out'+(menipis.length?'':'')+'"><div class="l">Perlu Restok</div><div class="n">'+menipis.length+'</div></div>' +
+    '<div class="kas-card bal"><div class="l">Nilai Persediaan</div><div class="n">'+fmtMoney(nilai,cur)+'</div></div>' +
+    '<div class="kas-card net"><div class="l">Total Unit</div><div class="n">'+semua.reduce(function(s,b){return s+b.stok;},0)+'</div></div>' +
+    '</div>';
+
+  var toolbar = '<div class="toolbar">' +
+    (isViewer()?'':'<button class="btn btn-primary btn-sm" onclick="openStokEditor()">+ Barang Baru</button>') +
+    '<input placeholder="Cari nama / kode..." value="'+esc(stokQ)+'" oninput="stokQ=this.value;render()">' +
+    '<select onchange="stokFilter=this.value;render()">' +
+      '<option value="semua"'+(stokFilter==='semua'?' selected':'')+'>Semua</option>' +
+      '<option value="menipis"'+(stokFilter==='menipis'?' selected':'')+'>Perlu Restok</option>' +
+      '<option value="habis"'+(stokFilter==='habis'?' selected':'')+'>Stok Habis</option>' +
+    '</select></div>';
+
+  var peringatan = menipis.length ? '<div class="warn-bar">⚠ ' + menipis.length + ' barang perlu segera direstok: ' +
+    esc(menipis.slice(0,3).map(function(b){ return b.nama+' ('+b.stok+' '+b.satuan+')'; }).join(', ')) +
+    (menipis.length>3?', dan lainnya':'') + '</div>' : '';
+
+  var daftar = data.length ? '<div class="card">' + data.map(stokRow).join('') + '</div>'
+    : '<div class="empty"><b>Belum ada barang</b><br>Catat persediaan barang dagangan atau bahan baku di sini. Fitur ini opsional — abaikan bila usaha Anda tidak menyimpan stok.</div>';
+
+  var mutasi = (state.db.mutasi||[]).slice(-12).reverse();
+  var riwayat = mutasi.length ? '<div class="card card-p"><div class="section-title" style="margin-top:0">Mutasi Terakhir</div>' +
+    mutasi.map(function(m){
+      var ic = m.jenis==='masuk'?'in':(m.jenis==='keluar'?'out':'adj');
+      var tanda = m.jenis==='masuk'?'+':(m.jenis==='keluar'?'−':'=');
+      return '<div class="mut-row"><span class="mut-ic '+ic+'">'+tanda+'</span>' +
+        '<div class="mut-main"><b>'+esc(m.nama)+'</b><div class="mini">'+fmtDate(m.tanggal)+(m.keterangan?' · '+esc(m.keterangan):'')+'</div></div>' +
+        '<b class="mut-qty '+ic+'">'+tanda+' '+m.qty+'</b></div>';
+    }).join('') + '</div>' : '';
+
+  return kartu + peringatan + toolbar + daftar + riwayat;
+}
+function stokRow(b){
+  var cur = (state.db.settings||{}).defaultCurrency || 'IDR';
+  var kritis = b.minStok > 0 && b.stok <= b.minStok;
+  var habis = b.stok <= 0;
+  return '<div class="list-item" style="cursor:pointer" onclick="openStokDetail(\'' + b.id + '\')">' +
+    '<div class="stok-ic'+(habis?' habis':(kritis?' kritis':''))+'">'+esc(String(b.nama||'?').charAt(0).toUpperCase())+'</div>' +
+    '<div class="li-main"><div class="t1">'+esc(b.nama)+(b.kode?' <span class="mini">'+esc(b.kode)+'</span>':'')+'</div>' +
+    '<div class="t2">'+esc(b.kategori||'—')+' · beli '+fmtMoney(b.hargaBeli,cur)+' · jual '+fmtMoney(b.hargaJual,cur)+'</div></div>' +
+    '<div class="li-amt"><div class="stok-qty'+(habis?' habis':(kritis?' kritis':''))+'">'+b.stok+' <span class="mini">'+esc(b.satuan||'')+'</span></div>' +
+    (kritis?'<div class="a2" style="color:var(--red)">min '+b.minStok+'</div>':'')+'</div></div>';
+}
+function openStokDetail(id){
+  var b = (state.db.stok||[]).find(function(x){ return String(x.id)===String(id); });
+  if(!b) return;
+  var cur = (state.db.settings||{}).defaultCurrency || 'IDR';
+  var mut = (state.db.mutasi||[]).filter(function(m){ return String(m.stokId)===String(id); }).slice(-8).reverse();
+  openModal('<div class="modal narrow"><h3>'+esc(b.nama)+'</h3>' +
+    '<div class="detail-row"><span>Kode</span><b>'+esc(b.kode||'—')+'</b></div>' +
+    '<div class="detail-row"><span>Kategori</span><b>'+esc(b.kategori||'—')+'</b></div>' +
+    '<div class="detail-row"><span>Stok Saat Ini</span><b>'+b.stok+' '+esc(b.satuan||'')+'</b></div>' +
+    '<div class="detail-row"><span>Stok Minimum</span><b>'+b.minStok+'</b></div>' +
+    '<div class="detail-row"><span>Harga Beli</span><b>'+fmtMoney(b.hargaBeli,cur)+'</b></div>' +
+    '<div class="detail-row"><span>Harga Jual</span><b>'+fmtMoney(b.hargaJual,cur)+'</b></div>' +
+    '<div class="detail-row"><span>Nilai Persediaan</span><b>'+fmtMoney(b.stok*b.hargaBeli,cur)+'</b></div>' +
+    (mut.length?'<div class="section-title">Mutasi Terakhir</div>' + mut.map(function(m){
+      return '<div class="mini" style="padding:3px 0">'+fmtDate(m.tanggal)+' · '+esc(m.jenis)+' '+m.qty+(m.keterangan?' — '+esc(m.keterangan):'')+'</div>';
+    }).join('') : '') +
+    '<div class="modal-actions" style="flex-wrap:wrap">' +
+      (state.user.role==='admin'?'<button class="btn btn-danger btn-sm" onclick="hapusStok(\''+b.id+'\')">Hapus</button>':'') +
+      '<button class="btn btn-ghost btn-sm" onclick="openStokEditor(\''+b.id+'\')">Edit</button>' +
+      '<button class="btn btn-ghost btn-sm" onclick="openMutasi(\''+b.id+'\',\'keluar\')">↑ Keluar</button>' +
+      '<button class="btn btn-primary btn-sm" onclick="openMutasi(\''+b.id+'\',\'masuk\')">↓ Masuk</button>' +
+    '</div></div>');
+}
+var stokState = null;
+function openStokEditor(id){
+  if(!guardWrite()) return;
+  var b = id ? (state.db.stok||[]).find(function(x){ return String(x.id)===String(id); }) : null;
+  stokState = b ? JSON.parse(JSON.stringify(b))
+    : { id:'', kode:'', nama:'', kategori:'', satuan:'pcs', stok:0, minStok:0, hargaBeli:0, hargaJual:0, aktif:true };
+  openModal('<div class="modal narrow"><h3>'+(id?'Ubah':'Tambah')+' Barang</h3>' +
+    '<div class="field"><label>Nama Barang *</label><input id="stNama" value="'+esc(stokState.nama)+'"></div>' +
+    '<div class="grid-2">' +
+      '<div class="field"><label>Kode / SKU</label><input id="stKode" value="'+esc(stokState.kode)+'"></div>' +
+      '<div class="field"><label>Kategori</label><input id="stKat" value="'+esc(stokState.kategori)+'" placeholder="mis. Bahan"></div>' +
+      '<div class="field"><label>Satuan</label><input id="stSatuan" value="'+esc(stokState.satuan)+'" placeholder="pcs / kg / batang"></div>' +
+      '<div class="field"><label>'+(id?'Stok Saat Ini':'Stok Awal')+'</label><input id="stStok" type="number" value="'+stokState.stok+'"'+(id?' disabled':'')+'></div>' +
+      '<div class="field"><label>Stok Minimum</label><input id="stMin" type="number" value="'+stokState.minStok+'"></div>' +
+      '<div class="field"><label>Harga Beli</label><input id="stBeli" type="number" value="'+stokState.hargaBeli+'"></div>' +
+      '<div class="field"><label>Harga Jual</label><input id="stJual" type="number" value="'+stokState.hargaJual+'"></div>' +
+    '</div>' +
+    (id?'<p class="mini">Stok hanya bisa diubah lewat tombol Masuk/Keluar agar riwayat mutasinya tetap tercatat.</p>':'') +
+    '<div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal()">Batal</button>' +
+    '<button class="btn btn-primary" onclick="simpanStok()">Simpan</button></div></div>');
+}
+function simpanStok(){
+  var p = {
+    id: stokState.id,
+    nama: $('stNama').value.trim(), kode: $('stKode').value.trim(), kategori: $('stKat').value.trim(),
+    satuan: $('stSatuan').value.trim() || 'pcs', minStok: Number($('stMin').value)||0,
+    hargaBeli: Number($('stBeli').value)||0, hargaJual: Number($('stJual').value)||0, aktif:true
+  };
+  if(!stokState.id) p.stok = Number($('stStok').value)||0;
+  if(!p.nama){ toast('Nama barang wajib diisi.'); return; }
+  loading(true);
+  api('saveStok', p).then(function(){ closeModal(); toast('Barang tersimpan ✓'); return reloadData(false); })
+    .catch(function(e){ loading(false); toast(e.message); });
+}
+function hapusStok(id){
+  if(!confirm('Hapus barang ini? Riwayat mutasinya tetap tersimpan.')) return;
+  loading(true);
+  api('deleteStok', { id:id }).then(function(){ closeModal(); toast('Barang dihapus'); return reloadData(false); })
+    .catch(function(e){ loading(false); toast(e.message); });
+}
+function openMutasi(stokId, jenis){
+  if(!guardWrite()) return;
+  var b = (state.db.stok||[]).find(function(x){ return String(x.id)===String(stokId); });
+  if(!b) return;
+  var masuk = jenis === 'masuk';
+  openModal('<div class="modal narrow"><h3>'+(masuk?'Barang Masuk':'Barang Keluar')+'</h3>' +
+    '<div class="detail-row"><span>Barang</span><b>'+esc(b.nama)+'</b></div>' +
+    '<div class="detail-row"><span>Stok Sekarang</span><b>'+b.stok+' '+esc(b.satuan||'')+'</b></div>' +
+    '<div class="field"><label>Jumlah *</label><input id="mtQty" type="number" min="1" placeholder="0"></div>' +
+    '<div class="field"><label>Harga per '+esc(b.satuan||'unit')+'</label><input id="mtHarga" type="number" value="'+(masuk?b.hargaBeli:b.hargaJual)+'"></div>' +
+    '<div class="field"><label>Tanggal</label><input id="mtTanggal" type="date" value="'+todayStr()+'"></div>' +
+    '<div class="field"><label>Keterangan</label><input id="mtKet" placeholder="'+(masuk?'mis. beli dari supplier':'mis. dipakai untuk pesanan')+'"></div>' +
+    '<label class="check-row"><input type="checkbox" id="mtKas" checked> Catat sekaligus ke Pembukuan</label>' +
+    '<div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal()">Batal</button>' +
+    '<button class="btn btn-primary" onclick="simpanMutasi(\''+stokId+'\',\''+jenis+'\')">Simpan</button></div></div>');
+}
+function simpanMutasi(stokId, jenis){
+  var qty = Number($('mtQty').value)||0;
+  if(qty <= 0){ toast('Jumlah harus lebih dari 0.'); return; }
+  loading(true);
+  api('saveMutasi', { stokId:stokId, jenis:jenis, qty:qty, harga:Number($('mtHarga').value)||0,
+    tanggal:$('mtTanggal').value, keterangan:$('mtKet').value.trim(), catatKas:$('mtKas').checked })
+    .then(function(){ closeModal(); toast('Mutasi tercatat ✓'); return reloadData(false); })
+    .catch(function(e){ loading(false); toast(e.message); });
+}
+
+
+/* ============================================================
+   TENTANG · SYARAT & KETENTUAN · KEBIJAKAN PRIVASI
+============================================================ */
+function openTentang(){
+  var s = state.db.settings || {};
+  var l = lic();
+  var statusLisensi = l.mode === 'lifetime' ? 'Seumur hidup ✓'
+    : (l.mode === 'trial' ? ('Percobaan — sisa ' + l.daysLeft + ' hari') : 'Percobaan berakhir (Mode Viewer)');
+  openModal('<div class="modal narrow"><h3>Tentang Aplikasi</h3>' +
+    '<div style="text-align:center;margin-bottom:14px">' +
+      '<div class="avatar avatar-lg" style="margin:0 auto 10px;border-radius:18px">'+brandBadge(s.appName||'Universal Invoice Manager', s.appLogoUrl)+'</div>' +
+      '<div style="font-weight:800;font-size:15px">'+esc(s.appName||'Universal Invoice Manager')+'</div>' +
+      '<div class="ver-badge" style="margin:6px auto 0">versi '+APP_VERSION+'</div>' +
+    '</div>' +
+    '<div class="detail-row"><span>Versi Aplikasi</span><b>'+APP_VERSION+'</b></div>' +
+    '<div class="detail-row"><span>Status Lisensi</span><b>'+statusLisensi+'</b></div>' +
+    '<div class="detail-row"><span>Database</span><b>'+esc(l.dbName||'-')+'</b></div>' +
+    '<div class="detail-row"><span>Kode Instalasi</span><b>'+esc(l.kodeInstalasi||'-')+'</b></div>' +
+    '<div class="detail-row"><span>Pemegang Lisensi</span><b>'+esc(l.licensedTo||s.companyName||'-')+'</b></div>' +
+    '<div class="detail-row"><span>Platform</span><b>Google Apps Script + Sheets</b></div>' +
+    '<div style="margin-top:14px">' +
+      '<button class="btn btn-ghost btn-block" onclick="openSyarat()">📄 Syarat &amp; Ketentuan</button>' +
+      '<button class="btn btn-ghost btn-block" style="margin-top:8px" onclick="openPrivasi()">🔒 Kebijakan Privasi</button>' +
+      '<button class="btn btn-ghost btn-block" style="margin-top:8px" onclick="openLisensiPihakKetiga()">⚖ Lisensi Komponen</button>' +
+    '</div>' +
+    '<div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal()">Tutup</button></div></div>');
+}
+
+function halamanLegal(judul, isi){
+  openModal('<div class="modal" style="max-width:640px"><h3>'+esc(judul)+'</h3>' +
+    '<div class="legal" style="max-height:60vh;overflow-y:auto;padding-right:4px">'+isi+'</div>' +
+    '<div class="modal-actions"><button class="btn btn-ghost" onclick="openTentang()">Kembali</button>' +
+    '<button class="btn btn-primary" onclick="closeModal()">Tutup</button></div></div>');
+}
+
+function openSyarat(){
+  var s = state.db.settings || {};
+  var pemilik = esc(s.companyName || 'pemegang lisensi');
+  halamanLegal('Syarat & Ketentuan Penggunaan',
+    '<p class="mini">Berlaku sejak versi '+APP_VERSION+'. Dengan menggunakan aplikasi ini, Anda dianggap telah membaca dan menyetujui ketentuan berikut.</p>' +
+
+    '<h4>1. Lisensi Penggunaan</h4>' +
+    '<p>Aplikasi diberikan sebagai <b>lisensi pakai</b>, bukan penjualan hak cipta. Lisensi berlaku untuk <b>satu database</b> (satu Google Spreadsheet) sesuai Kode Instalasi yang terdaftar. Menyalin database atau memasang aplikasi pada database lain memerlukan lisensi terpisah.</p>' +
+
+    '<h4>2. Masa Percobaan</h4>' +
+    '<p>Aplikasi dapat dicoba penuh selama 10 hari sejak pemasangan. Setelah masa itu berakhir, aplikasi beralih ke <b>Mode Viewer</b>: seluruh data Anda tetap dapat dibuka, dibaca, dan dicetak, namun penyimpanan perubahan baru dinonaktifkan hingga lisensi diaktifkan. Tidak ada data yang dihapus atau dikunci.</p>' +
+
+    '<h4>3. Kepemilikan Data</h4>' +
+    '<p>Seluruh data yang Anda masukkan tersimpan di Google Spreadsheet milik akun Google Anda sendiri. <b>Data sepenuhnya milik Anda.</b> Pemberi lisensi tidak memiliki akses ke data tersebut kecuali Anda memberikannya secara sukarela, misalnya saat meminta bantuan teknis.</p>' +
+
+    '<h4>4. Tanggung Jawab Pengguna</h4>' +
+    '<ul>' +
+      '<li>Menjaga kerahasiaan kata sandi dan mengganti kata sandi bawaan setelah pemasangan.</li>' +
+      '<li>Melakukan pencadangan berkala melalui fitur Backup yang tersedia.</li>' +
+      '<li>Memastikan isi dokumen (invoice, nota, faktur, berita acara, laporan) benar sebelum dikirim atau dipakai. Aplikasi membantu menyusun, bukan memverifikasi kebenaran isinya.</li>' +
+      '<li>Mematuhi peraturan perpajakan dan perundang-undangan yang berlaku.</li>' +
+    '</ul>' +
+
+    '<h4>5. Laporan Keuangan &amp; Perpajakan</h4>' +
+    '<p>Laporan yang dihasilkan aplikasi disusun dengan <b>dasar kas</b> dan ditujukan untuk keperluan pengelolaan internal. Laporan ini <b>bukan pengganti laporan keuangan yang diaudit</b> maupun nasihat perpajakan. Untuk pelaporan resmi kepada bank, investor, atau otoritas pajak, mohon dikaji terlebih dahulu oleh akuntan atau konsultan pajak.</p>' +
+
+    '<h4>6. Tanda Tangan Digital</h4>' +
+    '<p>Tanda tangan dan cap yang dibuat dalam aplikasi adalah <b>representasi gambar</b> untuk kelengkapan dokumen usaha sehari-hari, bukan tanda tangan elektronik tersertifikasi sebagaimana diatur untuk penyelenggara sertifikasi elektronik. Untuk dokumen yang menuntut kekuatan pembuktian khusus, gunakan layanan tanda tangan elektronik tersertifikasi.</p>' +
+
+    '<h4>7. Batasan Tanggung Jawab</h4>' +
+    '<p>Aplikasi disediakan "sebagaimana adanya". Pemberi lisensi tidak bertanggung jawab atas kehilangan data, kehilangan keuntungan, atau kerugian tidak langsung yang timbul dari penggunaan aplikasi, termasuk gangguan pada layanan Google yang berada di luar kendali. Aplikasi bergantung pada Google Apps Script dan Google Sheets beserta seluruh kuota dan batasannya.</p>' +
+
+    '<h4>8. Larangan</h4>' +
+    '<p>Dilarang menjual ulang, mendistribusikan, atau menyewakan aplikasi tanpa izin tertulis, serta menghapus atau mengakali mekanisme lisensi.</p>' +
+
+    '<h4>9. Dukungan &amp; Pembaruan</h4>' +
+    '<p>Cakupan dukungan teknis dan pembaruan mengikuti kesepakatan pembelian Anda dengan pemberi lisensi.</p>' +
+
+    '<h4>10. Perubahan Ketentuan</h4>' +
+    '<p>Ketentuan dapat diperbarui pada versi aplikasi berikutnya. Versi ketentuan yang berlaku adalah yang tercantum pada versi aplikasi yang Anda gunakan.</p>' +
+
+    '<p class="mini" style="margin-top:16px">Pengelola instalasi ini: <b>'+pemilik+'</b>. Pertanyaan mengenai ketentuan ini dapat disampaikan kepada pihak yang memberikan lisensi aplikasi kepada Anda.</p>');
+}
+
+function openPrivasi(){
+  var s = state.db.settings || {};
+  halamanLegal('Kebijakan Privasi',
+    '<p class="mini">Berlaku sejak versi '+APP_VERSION+'.</p>' +
+
+    '<h4>Ringkasnya</h4>' +
+    '<p>Aplikasi ini <b>tidak memiliki server sendiri</b>. Seluruh data tersimpan di Google Spreadsheet milik akun Google Anda dan berjalan di dalam akun Google Anda melalui Google Apps Script. Tidak ada data yang dikirim ke pengembang, dan tidak ada pelacakan, iklan, maupun analitik pihak ketiga.</p>' +
+
+    '<h4>Data yang Disimpan</h4>' +
+    '<ul>' +
+      '<li><b>Data usaha:</b> invoice, nota, surat jalan, faktur, berita acara, transaksi pembukuan, dan persediaan barang.</li>' +
+      '<li><b>Data klien:</b> nama, perusahaan, alamat, nomor telepon/WhatsApp, dan email yang Anda masukkan sendiri.</li>' +
+      '<li><b>Data pengguna aplikasi:</b> nama, username, email, nomor telepon, foto profil, serta kata sandi yang disimpan sebagai <b>hash SHA-256 dengan salt</b> — kata sandi asli tidak pernah disimpan.</li>' +
+      '<li><b>Gambar:</b> logo, cap/stempel, dan tanda tangan yang Anda unggah atau gambar sendiri.</li>' +
+      '<li><b>Log aktivitas:</b> catatan tindakan dalam aplikasi beserta nama penggunanya, untuk keperluan penelusuran.</li>' +
+    '</ul>' +
+
+    '<h4>Di Mana Data Disimpan</h4>' +
+    '<p>Di Google Spreadsheet Anda. Kendali akses sepenuhnya mengikuti pengaturan berbagi Google Drive milik Anda. Cadangan yang dibuat lewat fitur Backup tersimpan di Google Drive Anda sendiri atau diunduh ke perangkat Anda.</p>' +
+
+    '<h4>Data di Perangkat</h4>' +
+    '<p>Aplikasi menyimpan di peramban Anda: token sesi login, salinan logo/cap/tanda tangan agar tidak diunduh berulang, dan pengaturan tampilan. Semuanya dapat dihapus dengan membersihkan data situs atau menekan Keluar.</p>' +
+
+    '<h4>Berbagi dengan Pihak Ketiga</h4>' +
+    '<ul>' +
+      '<li><b>Google</b> — sebagai penyedia penyimpanan dan komputasi, tunduk pada kebijakan privasi Google.</li>' +
+      '<li><b>Email pengingat</b> dikirim melalui akun Gmail pemilik aplikasi kepada alamat klien yang Anda tuju.</li>' +
+      '<li><b>WhatsApp</b> — aplikasi hanya membuka tautan wa.me berisi pesan yang sudah disiapkan; pengiriman terjadi di aplikasi WhatsApp Anda sendiri.</li>' +
+      '<li><b>Tautan tanda tangan klien</b> dapat dibuka siapa pun yang memegang tautannya. Tautan berisi token acak yang panjang dan dapat dinonaktifkan kapan saja. Kirimkan hanya kepada pihak yang berhak.</li>' +
+    '</ul>' +
+
+    '<h4>Data Klien Anda</h4>' +
+    '<p>Bila Anda menyimpan data pribadi pelanggan, Andalah pengendali data tersebut. Pastikan pengumpulan dan penggunaannya sesuai peraturan pelindungan data pribadi yang berlaku di Indonesia, termasuk memberi tahu pelanggan bila diperlukan dan tidak menyimpan data melebihi keperluan.</p>' +
+
+    '<h4>Menghapus Data</h4>' +
+    '<p>Anda dapat menghapus data kapan saja langsung dari aplikasi, atau menghapus seluruh spreadsheet beserta isinya. Karena data berada di akun Anda, penghapusan bersifat final dan tidak dapat dipulihkan oleh pengembang.</p>' +
+
+    '<h4>Keamanan</h4>' +
+    '<p>Akses aplikasi dilindungi login dengan peran admin/staf, sesi berbatas waktu, dan kata sandi ter-hash. Meski begitu, keamanan juga bergantung pada Anda: gunakan kata sandi yang kuat, jangan berbagi akun, dan aktifkan verifikasi dua langkah pada akun Google Anda.</p>' +
+
+    '<p class="mini" style="margin-top:16px">Instalasi ini dikelola oleh <b>'+esc(s.companyName||'pemegang lisensi')+'</b>'+(s.companyEmail?' ('+esc(s.companyEmail)+')':'')+'. Pertanyaan mengenai data dapat disampaikan kepada pengelola tersebut.</p>');
+}
+
+function openLisensiPihakKetiga(){
+  halamanLegal('Lisensi Komponen Pihak Ketiga',
+    '<p>Aplikasi ini memakai komponen berikut, seluruhnya berlisensi permisif dan sah dipakai untuk produk komersial:</p>' +
+    '<h4>Chart.js</h4><p>Lisensi MIT — dipakai untuk menampilkan grafik. Hak cipta tetap pada pemegangnya.</p>' +
+    '<h4>Plus Jakarta Sans</h4><p>SIL Open Font License 1.1 — huruf yang dimuat melalui Google Fonts.</p>' +
+    '<h4>Google Apps Script, Sheets, Drive, Gmail</h4><p>Digunakan sesuai Google APIs Terms of Service, berjalan pada akun Google Anda sendiri.</p>' +
+    '<h4>Ikon &amp; Tata Letak Dokumen</h4><p>Dibuat sendiri untuk aplikasi ini. Nama layanan pembayaran (DANA, OVO, GoPay, ShopeePay, LinkAja, QRIS) hanya dipakai sebagai label teks; tidak ada logo atau aset merek pihak lain yang disertakan.</p>');
 }
 
 /* ============================================================
