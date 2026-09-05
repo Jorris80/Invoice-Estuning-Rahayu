@@ -433,7 +433,17 @@ table.dt tr:last-child td{border-bottom:none}
   border:1.5px solid var(--accent);border-radius:10px;padding:12px 18px}
 .kw-sheet .kw-jml span{font-size:14px;color:var(--accent-deep);font-weight:700}
 .kw-sheet .kw-jml b{font-size:22px;color:var(--accent-deep);letter-spacing:-.5px}
-.kw-sheet .kw-ttd-in{display:flex;gap:14px;align-items:flex-end}
+.kw-sheet .kw-ttd-in{display:flex;gap:20px;align-items:flex-end;justify-content:flex-end;flex-wrap:nowrap}
+.kw-sheet .kw-mt{flex:none;display:flex;align-items:flex-end;padding-bottom:26px}
+.kw-sheet .kw-col{flex:none;min-width:180px;text-align:center}
+.kw-sheet .kw-tgl{font-size:12.5px;color:#445}
+.kw-sheet .kw-role{font-size:12.5px;margin-bottom:2px}
+.kw-sheet .kw-area{position:relative;height:86px;display:flex;align-items:center;justify-content:center}
+.kw-sheet .kw-sig{max-height:80px;max-width:160px;object-fit:contain;position:relative;z-index:2}
+.kw-sheet .kw-cap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-12deg);
+  max-height:100px;max-width:148px;object-fit:contain;opacity:.85;mix-blend-mode:multiply;z-index:1;pointer-events:none}
+.kw-sheet .kw-nama{font-weight:800;font-size:13px;border-top:1px solid #334;display:inline-block;padding-top:4px;min-width:160px}
+.kw-sheet .kw-job{font-size:11.5px;color:#556}
 /* Tanda tangan penerbit di invoice */
 .print-sheet .sign-wrap{display:flex;justify-content:flex-end;margin-top:26px}
 .print-sheet .sign-block{text-align:center;min-width:230px}
@@ -458,7 +468,7 @@ table.dt tr:last-child td{border-bottom:none}
     margin:0; padding:0; background:#fff; box-shadow:none }
   #printArea,#printArea *{ -webkit-print-color-adjust:exact; print-color-adjust:exact }
   #printArea img{ display:inline-block !important }
-  .ba-sign .ba-cap,.print-sheet .sign-cap,.dok-sign .dok-cap{ mix-blend-mode:multiply;opacity:.85 }
+  .ba-sign .ba-cap,.print-sheet .sign-cap,.dok-sign .dok-cap,.kw-sheet .kw-cap{ mix-blend-mode:multiply;opacity:.85 }
   @page{ size:A4 portrait; margin:8mm }
   /* html,body memakai height:100% untuk tata letak layar. Saat mencetak, tinggi
      itu tetap dipertahankan sehingga menyisakan satu halaman kosong di akhir.
@@ -477,7 +487,7 @@ table.dt tr:last-child td{border-bottom:none}
   .print-sheet,.tbl-scroll,.pv-wrap,#printArea,#printArea *{ overflow:visible !important }
   .print-sheet table,.lap-print,.dok-items,.ba-items{ table-layout:auto;width:100% }
   /* Jangan biarkan blok tanda tangan, total, atau baris tabel terbelah ke halaman berikutnya */
-  .ba-sign,.dok-sign,.sign-wrap,.ba-sign .ba-col,.dok-sign .dok-col,.sign-block,
+  .ba-sign,.dok-sign,.sign-wrap,.ba-sign .ba-col,.dok-sign .dok-col,.sign-block,.kw-ttd-in,.kw-col,.kw-bawah,
   .dok-tot,.dok-jumlah,.dok-note,.totals,.lap-card{ break-inside:avoid; page-break-inside:avoid }
   table tr,.lap-print tr,.dok-items tr,.ba-items tr{ break-inside:avoid; page-break-inside:avoid }
   thead{ display:table-header-group }
@@ -496,7 +506,7 @@ table.dt tr:last-child td{border-bottom:none}
     <div class="login-mono" id="loginMono">IM</div>
     <h1 id="loginTitle">Universal Invoice Manager</h1>
     <p class="sub">Masuk untuk mengelola invoice bisnis Anda</p>
-    <div class="ver-badge">versi 2.4.0</div>
+    <div class="ver-badge">versi 2.4.1</div>
     <div class="login-err" id="loginErr"></div>
     <div class="field">
       <label>Username</label>
@@ -725,7 +735,7 @@ function pasangTombolBersih(root){
 }
 
 /* ---- Versi & Lisensi ---- */
-var APP_VERSION = '2.4.0';
+var APP_VERSION = '2.4.1';
 function lic(){ return (state.db && state.db.license) || { mode:'trial', valid:true, daysLeft:null }; }
 function isViewer(){ return lic().valid === false; }
 // Blokir aksi tulis saat Mode Viewer, dengan pesan yang jelas
@@ -3078,6 +3088,8 @@ function openDokDetail(id){
       '<div class="detail-row"><span>Klien</span><b>'+esc(d.clientName||'-')+'</b></div>' +
       (meta.harga?'<div class="detail-row"><span>Jumlah</span><b>'+fmtMoney(d.total,d.currency)+'</b></div>':'') +
       (d.invoiceNumber?'<div class="detail-row"><span>Invoice</span><b>'+esc(d.invoiceNumber)+'</b></div>':'') +
+      (d.jenis==='kuitansi' && !d.clientSignature
+        ? '<p class="mini" style="margin:8px 0">Kuitansi ditandatangani oleh <b>penerima uang</b> saja. Tanda tangan klien tidak diperlukan — klien cukup menyimpan kuitansi ini sebagai bukti pembayaran.</p>' : '') +
       (((d.extra||{}).perluMaterai) ? '<div class="detail-row"><span>e-Meterai</span><b>' +
         ((d.extra||{}).materaiSeri ? ('✓ ' + esc(d.extra.materaiSeri)) : 'Ruang disediakan — belum dibubuhkan') + '</b></div>' : '') +
       ttdInfo +
@@ -3085,7 +3097,8 @@ function openDokDetail(id){
         (state.user.role==='admin'?'<button class="btn btn-danger btn-sm" onclick="deleteDokumen(\''+d.id+'\')">Hapus</button>':'') +
         '<button class="btn btn-ghost btn-sm" onclick="openDokEditor(\''+d.jenis+'\',\''+d.id+'\')">Edit</button>' +
         (((d.extra||{}).perluMaterai) ? '<button class="btn btn-ghost btn-sm" onclick="openCatatMaterai(\'dokumen\',\''+d.id+'\')">🧾 Catat e-Meterai</button>' : '') +
-        (d.clientSignature?'':'<button class="btn btn-ghost btn-sm" onclick="shareSignLink(\''+d.id+'\')">🔗 Minta TTD Klien</button>') +
+        ((d.clientSignature || d.jenis==='kuitansi') ? '' :
+          '<button class="btn btn-ghost btn-sm" onclick="shareSignLink(\''+d.id+'\')">🔗 Minta TTD Klien</button>') +
         '<button class="btn btn-primary btn-sm" onclick="printDokumen(_dokCurrent)">Cetak / PDF</button>' +
       '</div></div>');
   }).catch(function(e){ loading(false); toast(e.message); });
@@ -3228,16 +3241,20 @@ function printKuitansi(d, s){
     '</div>' +
     '<div class="kw-bawah">' +
       '<div class="kw-jml"><span>Rp</span><b>'+fmtMoney(d.total,cur).replace(/^Rp\s*/,'')+'</b></div>' +
-      '<div class="kw-ttd">' +
-        '<div class="kw-ttd-in">' +
-          (kotakMaterai(d)?'<div class="mt-col">'+kotakMaterai(d)+'</div>':'') +
-          '<div class="dok-col">' +
-            '<div class="dok-role">'+(d.tempat?esc(d.tempat)+', ':'')+fmtDate(d.tanggal)+'</div>' +
-            '<div class="dok-ttd">'+(d.stamp?'<img class="dok-cap" src="'+esc(d.stamp)+'" alt="cap">':'')+
-              (d.signature?'<img class="dok-sig" src="'+esc(d.signature)+'" alt="ttd">':'')+'</div>' +
-            '<div class="dok-nama">'+esc(d.signerName||s.companyName||'(...............)')+'</div>' +
-            (d.signerTitle?'<div class="dok-job">'+esc(d.signerTitle)+'</div>':'') +
-          '</div>' +
+      '<div class="kw-ttd-in">' +
+        (kotakMaterai(d)?'<div class="kw-mt">'+kotakMaterai(d)+'</div>':'') +
+        (d.clientSignature ? '<div class="kw-col">' +
+            '<div class="kw-role">Yang menyerahkan,</div>' +
+            '<div class="kw-area"><img class="kw-sig" src="'+esc(d.clientSignature)+'" alt="ttd klien"></div>' +
+            '<div class="kw-nama">'+esc(d.clientSignerName||d.clientName||'')+'</div>' +
+          '</div>' : '') +
+        '<div class="kw-col">' +
+          '<div class="kw-tgl">'+(d.tempat?esc(d.tempat)+', ':'')+fmtDate(d.tanggal)+'</div>' +
+          '<div class="kw-role">Yang menerima,</div>' +
+          '<div class="kw-area">'+(d.stamp?'<img class="kw-cap" src="'+esc(d.stamp)+'" alt="cap">':'')+
+            (d.signature?'<img class="kw-sig" src="'+esc(d.signature)+'" alt="ttd">':'')+'</div>' +
+          '<div class="kw-nama">'+esc(d.signerName||s.companyName||'(...............)')+'</div>' +
+          (d.signerTitle?'<div class="kw-job">'+esc(d.signerTitle)+'</div>':'') +
         '</div>' +
       '</div>' +
     '</div>' +
@@ -4903,6 +4920,7 @@ function muatUlangPembaruan(){
 </script>
 </body>
 </html>
+
 
 
 
