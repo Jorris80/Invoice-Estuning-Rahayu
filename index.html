@@ -506,7 +506,7 @@ table.dt tr:last-child td{border-bottom:none}
     <div class="login-mono" id="loginMono">IM</div>
     <h1 id="loginTitle">Universal Invoice Manager</h1>
     <p class="sub">Masuk untuk mengelola invoice bisnis Anda</p>
-    <div class="ver-badge">versi 2.4.1</div>
+    <div class="ver-badge">versi 2.4.2</div>
     <div class="login-err" id="loginErr"></div>
     <div class="field">
       <label>Username</label>
@@ -735,7 +735,7 @@ function pasangTombolBersih(root){
 }
 
 /* ---- Versi & Lisensi ---- */
-var APP_VERSION = '2.4.1';
+var APP_VERSION = '2.4.2';
 function lic(){ return (state.db && state.db.license) || { mode:'trial', valid:true, daysLeft:null }; }
 function isViewer(){ return lic().valid === false; }
 // Blokir aksi tulis saat Mode Viewer, dengan pesan yang jelas
@@ -2763,11 +2763,20 @@ function viewDokumen(jenis){
     : '<div class="empty"><b>Belum ada '+meta.label.toLowerCase()+'</b><br>Buat dokumen baru, lengkap dengan tanda tangan & cap basah.</div>';
   return toolbar + body;
 }
+/* TTD klien tidak berlaku untuk semua dokumen. Kuitansi hanya ditandatangani
+   penerima uang, jadi statusnya baru ditampilkan bila memang diaktifkan. */
+function pakaiTtdKlien(d){
+  if(d.jenis !== 'kuitansi') return true;
+  return ((d.extra||{}).perluTtdKlien === true) || !!d.hasClientSignature || !!d.clientSignature;
+}
 function dokRow(d){
   var meta = dokMeta(d.jenis);
-  var badge = d.hasClientSignature
-    ? '<span class="pill paid">TTD Klien ✓</span>'
-    : (d.tokenActive ? '<span class="pill draft">Menunggu TTD</span>' : '<span class="pill unpaid">Belum TTD</span>');
+  var badge = !pakaiTtdKlien(d)
+    ? ((d.perluMaterai || (d.extra||{}).perluMaterai)
+        ? '<span class="pill draft">Materai</span>' : '')
+    : (d.hasClientSignature
+        ? '<span class="pill paid">TTD Klien ✓</span>'
+        : (d.tokenActive ? '<span class="pill draft">Menunggu TTD</span>' : '<span class="pill unpaid">Belum TTD</span>'));
   return '<div class="list-item" style="cursor:pointer" onclick="openDokDetail(\''+d.id+'\')">' +
     '<div style="flex:none;width:38px;height:38px;border-radius:11px;background:var(--accent-soft);color:var(--accent-deep);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px">'+esc(meta.prefix)+'</div>' +
     '<div class="li-main"><div class="t1">'+esc(d.nomor||'(tanpa nomor)')+'</div>' +
@@ -2794,7 +2803,7 @@ function newDokState(jenis){
     perhatian: (jenis==='nota' ? '- Pesanan disertai uang muka 50% dari jumlah pesanan\n- Barang yang sudah diambil tidak bisa ditukar/dikembalikan' : ''),
     extra:{ sopir:'', kondektur:'', noPolisi:'', jam:'', poNumber:'', jatuhTempo:'' },
     invoiceId:'', invoiceNumber:'',
-    perluMaterai:false, materaiSeri:'', materaiTgl:'',
+    perluMaterai:false, materaiSeri:'', materaiTgl:'', perluTtdKlien:false,
     signature:'', stamp:'', signerName:(s.signerName||''), signerTitle:(s.signerTitle||''),
     clientSignature:'', clientSignerName:'', clientSignedAt:'', tokenActive:false
   };
@@ -2810,6 +2819,7 @@ function openDokEditor(jenis, id){
       if(!dokState.extra) dokState.extra = {};
       if(dokState.extra.stampColor) dokState.stampColor = dokState.extra.stampColor;
       dokState.perluMaterai = dokState.extra.perluMaterai === true;
+      dokState.perluTtdKlien = dokState.extra.perluTtdKlien === true;
       dokState.materaiSeri = dokState.extra.materaiSeri || '';
       dokState.materaiTgl = dokState.extra.materaiTgl || '';
       renderDokEditor();
@@ -2857,6 +2867,7 @@ function syncDokFields(){
   if($('dkTax')) d.taxRate = Number($('dkTax').value)||0;
   if($('dkCurrency')) d.currency = $('dkCurrency').value;
   if($('dkMaterai')) d.perluMaterai = $('dkMaterai').checked;
+  if($('dkTtdKlien')) d.perluTtdKlien = $('dkTtdKlien').checked;
   if($('dkSignerName')) d.signerName = $('dkSignerName').value.trim();
   if($('dkSignerTitle')) d.signerTitle = $('dkSignerTitle').value.trim();
   d.extra = d.extra||{};
@@ -2945,6 +2956,14 @@ function renderDokEditor(){
       : '') +
     '<p class="mini">Aplikasi menyediakan ruangnya saja; pembubuhan dilakukan di portal distributor resmi. ' +
       '<a href="javascript:void(0)" onclick="openPanduanMaterai()" style="color:var(--accent-deep);font-weight:700">Lihat caranya</a></p>' +
+    (d.jenis === 'kuitansi'
+      ? '<div class="section-title">Tanda Tangan Pembayar (opsional)</div>' +
+        '<label class="check-row"><input type="checkbox" id="dkTtdKlien" '+(d.perluTtdKlien?'checked':'')+
+          ' onchange="dokState.perluTtdKlien=this.checked"> Sertakan kolom tanda tangan pembayar</label>' +
+        '<p class="mini">Lazimnya kuitansi hanya ditandatangani <b>penerima uang</b>. Aktifkan hanya bila usaha Anda ' +
+          'memang membiasakan pembayar ikut menandatangani. Bila aktif, kolom <b>"Yang menyerahkan,"</b> muncul di ' +
+          'hasil cetak dan tombol permintaan tanda tangan lewat WhatsApp ikut tersedia.</p>'
+      : '') +
     '<div class="section-title">Tanda Tangan & Cap Penerbit</div>' +
     '<div class="grid-2">' +
       '<div class="field"><label>Nama Penanda Tangan</label><input id="dkSignerName" value="'+esc(d.signerName||'')+'"></div>' +
@@ -3061,6 +3080,7 @@ function saveDokumen(){
   d.subtotal=t.subtotal; d.discountAmount=t.discountAmount; d.taxAmount=t.taxAmount; d.total=t.total;
   d.extra = d.extra||{}; d.extra.stampColor = dokStampColor();
   d.extra.perluMaterai = d.perluMaterai === true;
+  d.extra.perluTtdKlien = d.perluTtdKlien === true;
   d.extra.materaiSeri = d.materaiSeri || '';
   d.extra.materaiTgl = d.materaiTgl || '';
   loading(true);
@@ -3082,14 +3102,16 @@ function openDokDetail(id){
     var ttdInfo = d.clientSignature
       ? '<div class="detail-row"><span>TTD Klien</span><b style="color:var(--accent-deep)">✓ '+esc(d.clientSignerName)+'</b></div>' +
         '<div class="detail-row"><span>Ditandatangani</span><b>'+fmtDate(d.clientSignedAt)+'</b></div>'
-      : '<div class="detail-row"><span>TTD Klien</span><b>'+(d.tokenActive?'Menunggu tanda tangan':'Belum dikirim')+'</b></div>';
+      : (pakaiTtdKlien(d)
+          ? '<div class="detail-row"><span>TTD Klien</span><b>'+(d.tokenActive?'Menunggu tanda tangan':'Belum dikirim')+'</b></div>'
+          : '');
     openModal('<div class="modal narrow"><h3>'+esc(meta.label)+' '+esc(d.nomor||'')+'</h3>' +
       '<div class="detail-row"><span>Tanggal</span><b>'+fmtDate(d.tanggal)+'</b></div>' +
       '<div class="detail-row"><span>Klien</span><b>'+esc(d.clientName||'-')+'</b></div>' +
       (meta.harga?'<div class="detail-row"><span>Jumlah</span><b>'+fmtMoney(d.total,d.currency)+'</b></div>':'') +
       (d.invoiceNumber?'<div class="detail-row"><span>Invoice</span><b>'+esc(d.invoiceNumber)+'</b></div>':'') +
-      (d.jenis==='kuitansi' && !d.clientSignature
-        ? '<p class="mini" style="margin:8px 0">Kuitansi ditandatangani oleh <b>penerima uang</b> saja. Tanda tangan klien tidak diperlukan — klien cukup menyimpan kuitansi ini sebagai bukti pembayaran.</p>' : '') +
+      (d.jenis==='kuitansi' && !pakaiTtdKlien(d)
+        ? '<p class="mini" style="margin:8px 0">Kuitansi ditandatangani oleh <b>penerima uang</b> saja — klien cukup menyimpannya sebagai bukti pembayaran. Bila usaha Anda tetap memerlukan tanda tangan pembayar, aktifkan lewat <b>Edit → Tanda Tangan Pembayar</b>.</p>' : '') +
       (((d.extra||{}).perluMaterai) ? '<div class="detail-row"><span>e-Meterai</span><b>' +
         ((d.extra||{}).materaiSeri ? ('✓ ' + esc(d.extra.materaiSeri)) : 'Ruang disediakan — belum dibubuhkan') + '</b></div>' : '') +
       ttdInfo +
@@ -3097,7 +3119,7 @@ function openDokDetail(id){
         (state.user.role==='admin'?'<button class="btn btn-danger btn-sm" onclick="deleteDokumen(\''+d.id+'\')">Hapus</button>':'') +
         '<button class="btn btn-ghost btn-sm" onclick="openDokEditor(\''+d.jenis+'\',\''+d.id+'\')">Edit</button>' +
         (((d.extra||{}).perluMaterai) ? '<button class="btn btn-ghost btn-sm" onclick="openCatatMaterai(\'dokumen\',\''+d.id+'\')">🧾 Catat e-Meterai</button>' : '') +
-        ((d.clientSignature || d.jenis==='kuitansi') ? '' :
+        ((d.clientSignature || !pakaiTtdKlien(d)) ? '' :
           '<button class="btn btn-ghost btn-sm" onclick="shareSignLink(\''+d.id+'\')">🔗 Minta TTD Klien</button>') +
         '<button class="btn btn-primary btn-sm" onclick="printDokumen(_dokCurrent)">Cetak / PDF</button>' +
       '</div></div>');
@@ -3243,9 +3265,10 @@ function printKuitansi(d, s){
       '<div class="kw-jml"><span>Rp</span><b>'+fmtMoney(d.total,cur).replace(/^Rp\s*/,'')+'</b></div>' +
       '<div class="kw-ttd-in">' +
         (kotakMaterai(d)?'<div class="kw-mt">'+kotakMaterai(d)+'</div>':'') +
-        (d.clientSignature ? '<div class="kw-col">' +
+        ((d.clientSignature || (d.extra||{}).perluTtdKlien) ? '<div class="kw-col">' +
+            '<div class="kw-tgl">&nbsp;</div>' +
             '<div class="kw-role">Yang menyerahkan,</div>' +
-            '<div class="kw-area"><img class="kw-sig" src="'+esc(d.clientSignature)+'" alt="ttd klien"></div>' +
+            '<div class="kw-area">'+(d.clientSignature?'<img class="kw-sig" src="'+esc(d.clientSignature)+'" alt="ttd klien">':'')+'</div>' +
             '<div class="kw-nama">'+esc(d.clientSignerName||d.clientName||'')+'</div>' +
           '</div>' : '') +
         '<div class="kw-col">' +
@@ -4920,6 +4943,7 @@ function muatUlangPembaruan(){
 </script>
 </body>
 </html>
+
 
 
 
